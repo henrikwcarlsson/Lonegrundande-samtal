@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lönegrundande samtal · Ahlsell Region 83</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p: #003865;
+  --p2: #1565a0;
+  --p3: #1a7bc4;
+  --pxl: #e8f0f8;
+  --acc: #e8640c;
+  --acc2: #ff8c3b;
+  --bg: #f0f3f7;
+  --card: #ffffff;
+  --border: #dde3ec;
+  --text: #1a2332;
+  --muted: #64748b;
+  --over-bg: #d1fae5; --over-bd: #6ee7b7; --over-tx: #065f46;
+  --all-bg:  #dbeafe; --all-bd:  #93c5fd; --all-tx:  #1e3a8a;
+  --most-bg: #fef3c7; --most-bd: #fcd34d; --most-tx: #78350f;
+  --some-bg: #fee2e2; --some-bd: #fca5a5; --some-tx: #7f1d1d;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+  --font-head: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --sidebar-w: 260px;
+  --trans: .22s cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+#shell { display: flex; min-height: 100vh; }
+#sidebar {
+  width: var(--sidebar-w); flex-shrink: 0; background: var(--p);
+  display: flex; flex-direction: column; position: fixed; top: 0; left: 0;
+  height: 100vh; overflow-y: auto; z-index: 100;
+  transition: transform var(--trans);
+}
+#main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ── Sidebar ────────────────────────────────────────────────────── */
+.sb-brand {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.sb-logo-text {
+  font-family: var(--font-head); font-weight: 800; font-size: 1.15rem;
+  color: #fff; letter-spacing: -.5px; line-height: 1.1;
+}
+.sb-logo-sub { font-size: .72rem; color: rgba(255,255,255,.55); letter-spacing: .5px; margin-top: 2px; }
+.sb-role-pill {
+  margin: 12px 20px 0;
+  background: rgba(255,255,255,.12); border-radius: 999px;
+  padding: 5px 12px; font-size: .75rem; font-weight: 600;
+  color: rgba(255,255,255,.9); letter-spacing: .3px;
+  border: 1px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; gap: 6px;
+  transition: all var(--trans); cursor: pointer;
+}
+.sb-role-pill .dot { width:7px;height:7px;border-radius:50%;background:var(--acc2);flex-shrink:0; }
+.sb-steps { padding: 20px 0; flex: 1; }
+.sb-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 20px; cursor: pointer;
+  transition: background var(--trans); position: relative;
+  text-decoration: none;
+}
+.sb-step:hover { background: rgba(255,255,255,.07); }
+.sb-step.active { background: rgba(255,255,255,.12); }
+.sb-step.active::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--acc2); border-radius: 0 2px 2px 0;
+}
+.step-num {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700; color: rgba(255,255,255,.4);
+  flex-shrink: 0; transition: all var(--trans); margin-top: 1px;
+}
+.sb-step.done .step-num { background: var(--acc); border-color: var(--acc); color: #fff; }
+.sb-step.active .step-num { border-color: var(--acc2); color: var(--acc2); }
+.step-label { font-size: .8rem; font-weight: 500; color: rgba(255,255,255,.45); line-height: 1.35; transition: color var(--trans); }
+.sb-step.active .step-label { color: rgba(255,255,255,.95); font-weight: 600; }
+.sb-step.done .step-label { color: rgba(255,255,255,.65); }
+.step-sub { font-size: .7rem; color: rgba(255,255,255,.3); margin-top: 1px; }
+.sb-foot { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+.sb-help { font-size: .72rem; color: rgba(255,255,255,.35); line-height: 1.5; }
+
+/* ── Top bar ────────────────────────────────────────────────────── */
+#topbar {
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 56px; display: flex; align-items: center;
+  justify-content: space-between; position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.topbar-title { font-family: var(--font-head); font-weight: 700; font-size: .95rem; color: var(--p); }
+.topbar-actions { display: flex; gap: 10px; align-items: center; }
+.progress-ring { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: var(--muted); }
+.progress-bar { width: 100px; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--acc); transition: width .4s ease; }
+.btn-print {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--pxl); color: var(--p); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font-size: .78rem; font-weight: 600;
+  cursor: pointer; transition: all var(--trans); font-family: var(--font-body);
+}
+.btn-print:hover { background: var(--p); color: #fff; }
+.btn-menu { display:none; background:none; border:none; cursor:pointer; color:var(--p); font-size:1.3rem; }
+
+/* ── Content ────────────────────────────────────────────────────── */
+#content { flex: 1; padding: 32px; max-width: 900px; width: 100%; margin: 0 auto; }
+.step-view { animation: fadeUp .3s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Nav footer ─────────────────────────────────────────────────── */
+#navfoot {
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; bottom: 0; z-index: 50;
+}
+.btn { display: inline-flex; align-items: center; gap: 8px; border: none; border-radius: 10px; padding: 10px 22px; font-size: .87rem; font-weight: 600; cursor: pointer; transition: all var(--trans); font-family: var(--font-body); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--bg); color: var(--text); }
+.btn-primary { background: var(--p); color: #fff; }
+.btn-primary:hover { background: var(--p2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,56,101,.3); }
+.btn-acc { background: var(--acc); color: #fff; }
+.btn-acc:hover { background: var(--acc2); transform: translateY(-1px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+.step-count { font-size: .78rem; color: var(--muted); font-weight: 500; }
+
+/* ── Cards & sections ───────────────────────────────────────────── */
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+.card-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-body { padding: 24px; }
+.section-title { font-family: var(--font-head); font-weight: 700; font-size: 1.5rem; color: var(--p); margin-bottom: 6px; }
+.section-sub { color: var(--muted); font-size: .88rem; margin-bottom: 24px; line-height: 1.6; }
+.label { font-size: .75rem; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: block; }
+.input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: var(--font-body); font-size: .9rem; color: var(--text); background: var(--card); transition: border-color var(--trans); outline: none; }
+.input:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(26,123,196,.12); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ── Step 0 — Role cards ──────────────────────────────────────── */
+.role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+.role-card {
+  border: 2px solid var(--border); border-radius: var(--radius); padding: 22px 20px;
+  cursor: pointer; transition: all var(--trans); background: var(--card);
+  position: relative; overflow: hidden;
+}
+.role-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--p); transform: scaleX(0); transition: transform var(--trans);
+  transform-origin: left;
+}
+.role-card:hover { border-color: var(--p3); transform: translateY(-2px); box-shadow: var(--shadow); }
+.role-card:hover::after { transform: scaleX(1); }
+.role-card.selected { border-color: var(--p); background: var(--pxl); }
+.role-card.selected::after { transform: scaleX(1); }
+.role-icon { font-size: 1.8rem; margin-bottom: 10px; }
+.role-name { font-family: var(--font-head); font-weight: 700; font-size: 1.05rem; color: var(--p); margin-bottom: 6px; }
+.role-desc { font-size: .8rem; color: var(--muted); line-height: 1.55; }
+.role-check { position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: var(--p); display: none; align-items: center; justify-content: center; color: #fff; font-size: .75rem; }
+.role-card.selected .role-check { display: flex; }
+
+/* ── Step 1 — Instructions ─────────────────────────────────────── */
+.process-steps { display: flex; flex-direction: column; gap: 0; }
+.proc-step {
+  display: flex; gap: 16px; padding: 16px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer;
+  transition: all var(--trans);
+}
+.proc-step:last-child { border-bottom: none; }
+.proc-num {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--p); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  font-size: .85rem; flex-shrink: 0; margin-top: 2px;
+}
+.proc-content { flex: 1; }
+.proc-title { font-weight: 600; font-size: .93rem; color: var(--text); }
+.proc-body { font-size: .83rem; color: var(--muted); margin-top: 6px; line-height: 1.6; display: none; }
+.proc-step.open .proc-body { display: block; animation: fadeIn .2s ease; }
+.proc-arrow { color: var(--muted); transition: transform var(--trans); font-size: .9rem; padding-top: 5px; }
+.proc-step.open .proc-arrow { transform: rotate(180deg); }
+
+.principles { background: var(--pxl); border: 1px solid var(--border); border-left: 4px solid var(--p); border-radius: var(--radius); padding: 18px 20px; }
+.principles-title { font-weight: 700; font-size: .88rem; color: var(--p); margin-bottom: 10px; }
+.principle { display: flex; gap: 10px; margin-bottom: 8px; font-size: .82rem; color: var(--text); line-height: 1.55; }
+.principle::before { content: '›'; color: var(--acc); font-weight: 700; flex-shrink: 0; }
+
+/* ── Step 2 — Goals ────────────────────────────────────────────── */
+.goal-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.goal-table th { background: var(--p); color: #fff; font-size: .77rem; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; padding: 10px 14px; text-align: left; }
+.goal-table td { border-bottom: 1px solid var(--border); padding: 6px 6px; vertical-align: top; }
+.goal-table tr:hover td { background: var(--pxl); }
+.goal-input { width: 100%; border: none; background: transparent; font-family: var(--font-body); font-size: .85rem; color: var(--text); padding: 6px 8px; border-radius: 6px; outline: none; resize: vertical; min-height: 36px; }
+.goal-input:focus { background: white; box-shadow: 0 0 0 2px var(--p3); }
+.level-select { border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 10px; font-family: var(--font-body); font-size: .82rem; background: var(--card); color: var(--text); cursor: pointer; width: 100%; }
+.btn-add-goal { display: flex; align-items: center; gap: 8px; background: none; border: 2px dashed var(--border); border-radius: 8px; padding: 10px 16px; font-size: .83rem; font-weight: 600; color: var(--muted); cursor: pointer; width: 100%; justify-content: center; margin-top: 8px; transition: all var(--trans); font-family: var(--font-body); }
+.btn-add-goal:hover { border-color: var(--p3); color: var(--p); background: var(--pxl); }
+.btn-del { background: none; border: none; color: #ddd; cursor: pointer; font-size: 1.1rem; padding: 4px 8px; border-radius: 6px; transition: all var(--trans); }
+.btn-del:hover { background: var(--some-bg); color: var(--some-tx); }
+
+/* ── Step 3 — Competencies ──────────────────────────────────────── */
+.comp-cards { display: flex; flex-direction: column; gap: 12px; }
+.comp-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow var(--trans); }
+.comp-card:hover { box-shadow: var(--shadow); }
+.comp-card.has-rating { border-color: transparent; }
+.comp-card.has-rating.r-over { border-color: var(--over-bd); box-shadow: 0 0 0 1px var(--over-bd), 0 2px 8px rgba(6,95,70,.08); }
+.comp-card.has-rating.r-all  { border-color: var(--all-bd);  box-shadow: 0 0 0 1px var(--all-bd),  0 2px 8px rgba(30,58,138,.08); }
+.comp-card.has-rating.r-most { border-color: var(--most-bd); box-shadow: 0 0 0 1px var(--most-bd), 0 2px 8px rgba(120,53,15,.08); }
+.comp-card.has-rating.r-some { border-color: var(--some-bd); box-shadow: 0 0 0 1px var(--some-bd), 0 2px 8px rgba(127,29,29,.08); }
+
+.comp-header {
+  padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: background var(--trans); user-select: none;
+}
+.comp-header:hover { background: var(--bg); }
+.comp-num { width: 28px; height: 28px; border-radius: 8px; background: var(--pxl); color: var(--p); font-weight: 800; font-size: .82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-head); }
+.comp-title-wrap { flex: 1; }
+.comp-title { font-weight: 700; font-size: .95rem; color: var(--p); font-family: var(--font-head); }
+.comp-desc-short { font-size: .76rem; color: var(--muted); margin-top: 2px; }
+.comp-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.rating-badge { padding: 4px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; letter-spacing: .3px; }
+.rating-badge.over { background: var(--over-bg); color: var(--over-tx); }
+.rating-badge.all  { background: var(--all-bg);  color: var(--all-tx); }
+.rating-badge.most { background: var(--most-bg); color: var(--most-tx); }
+.rating-badge.some { background: var(--some-bg); color: var(--some-tx); }
+.comp-chevron { color: var(--muted); font-size: .85rem; transition: transform var(--trans); }
+.comp-card.open .comp-chevron { transform: rotate(180deg); }
+
+.comp-body { display: none; border-top: 1px solid var(--border); }
+.comp-card.open .comp-body { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.comp-inner { padding: 20px; }
+
+/* Role focus tag */
+.role-focus {
+  background: linear-gradient(135deg, var(--pxl), #fff);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 18px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.role-focus-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.role-focus-content { font-size: .8rem; color: var(--text); line-height: 1.55; }
+.role-focus-label { font-weight: 700; color: var(--p); font-size: .72rem; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; }
+
+/* Coaching questions */
+.questions-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 6px 12px; font-size: .77rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all var(--trans); font-family: var(--font-body);
+  margin-bottom: 16px;
+}
+.questions-toggle:hover { background: var(--pxl); border-color: var(--p3); color: var(--p); }
+.questions-toggle.open { background: var(--pxl); border-color: var(--p); color: var(--p); }
+.questions-panel {
+  background: #f8faff; border: 1px solid var(--all-bd); border-radius: 10px;
+  padding: 14px 16px; margin-bottom: 16px; display: none;
+}
+.questions-panel.open { display: block; animation: fadeIn .2s ease; }
+.questions-panel li { font-size: .82rem; color: var(--text); line-height: 1.6; margin-bottom: 8px; padding-left: 14px; position: relative; }
+.questions-panel li::before { content: '?'; position: absolute; left: 0; color: var(--p3); font-weight: 700; font-size: .72rem; top: 2px; }
+.questions-panel li:last-child { margin-bottom: 0; }
+
+/* Level selector */
+.level-selector { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.level-btn {
+  border: 2px solid var(--border); border-radius: 10px; padding: 10px 8px;
+  cursor: pointer; transition: all var(--trans); background: var(--card);
+  text-align: center; font-family: var(--font-body);
+}
+.level-btn .lb-label { font-size: .72rem; font-weight: 700; letter-spacing: .2px; line-height: 1.3; }
+.level-btn:hover { transform: translateY(-2px); }
+.level-btn.over:hover, .level-btn.over.sel { background: var(--over-bg); border-color: var(--over-bd); }
+.level-btn.over.sel .lb-label { color: var(--over-tx); }
+.level-btn.all:hover, .level-btn.all.sel { background: var(--all-bg); border-color: var(--all-bd); }
+.level-btn.all.sel .lb-label { color: var(--all-tx); }
+.level-btn.most:hover, .level-btn.most.sel { background: var(--most-bg); border-color: var(--most-bd); }
+.level-btn.most.sel .lb-label { color: var(--most-tx); }
+.level-btn.some:hover, .level-btn.some.sel { background: var(--some-bg); border-color: var(--some-bd); }
+.level-btn.some.sel .lb-label { color: var(--some-tx); }
+.level-btn.sel { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+
+/* Indicators */
+.indicators-panel { display: none; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+.indicators-panel.visible { display: block; animation: fadeIn .25s ease; }
+.indicators-panel.over { background: var(--over-bg); border: 1px solid var(--over-bd); }
+.indicators-panel.all  { background: var(--all-bg);  border: 1px solid var(--all-bd); }
+.indicators-panel.most { background: var(--most-bg); border: 1px solid var(--most-bd); }
+.indicators-panel.some { background: var(--some-bg); border: 1px solid var(--some-bd); }
+.ind-title { font-size: .72rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 8px; }
+.indicators-panel.over .ind-title { color: var(--over-tx); }
+.indicators-panel.all  .ind-title { color: var(--all-tx); }
+.indicators-panel.most .ind-title { color: var(--most-tx); }
+.indicators-panel.some .ind-title { color: var(--some-tx); }
+.ind-item { display: flex; gap: 8px; font-size: .8rem; margin-bottom: 6px; line-height: 1.5; }
+.ind-item::before { content: '✓'; font-weight: 700; flex-shrink: 0; }
+.indicators-panel.some .ind-item::before { content: '!'; }
+.indicators-panel.over .ind-item { color: var(--over-tx); }
+.indicators-panel.all  .ind-item { color: var(--all-tx); }
+.indicators-panel.most .ind-item { color: var(--most-tx); }
+.indicators-panel.some .ind-item { color: var(--some-tx); }
+
+.textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: var(--font-body); font-size: .85rem; color: var(--text); resize: vertical; min-height: 80px; outline: none; transition: border-color var(--trans); }
+.textarea:focus { border-color: var(--p3); box-shadow: 0 0 0 3px rgba(26,123,196,.1); }
+
+/* ── Step 4 — Summary ───────────────────────────────────────────── */
+.summary-grid { display: flex; flex-direction: column; gap: 8px; }
+.summary-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 14px 18px; transition: all var(--trans);
+}
+.sum-num { width: 26px; height: 26px; border-radius: 7px; background: var(--pxl); color: var(--p); font-weight: 800; font-size: .78rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sum-title { flex: 1; font-weight: 600; font-size: .87rem; color: var(--text); }
+.sum-rating { flex-shrink: 0; }
+.sum-comment { font-size: .76rem; color: var(--muted); font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.sum-na { font-size: .75rem; color: var(--muted); font-style: italic; }
+
+.overall-select { margin-top: 24px; }
+.overall-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+.overall-btn {
+  border: 2px solid var(--border); border-radius: 10px; padding: 14px 10px;
+  cursor: pointer; text-align: center; transition: all var(--trans); background: var(--card);
+  font-family: var(--font-body);
+}
+.overall-btn .ob-label { font-size: .78rem; font-weight: 700; line-height: 1.3; }
+.overall-btn .ob-sub { font-size: .68rem; color: var(--muted); margin-top: 4px; }
+.overall-btn.over.sel { background: var(--over-bg); border-color: var(--over-bd); }
+.overall-btn.over.sel .ob-label { color: var(--over-tx); }
+.overall-btn.all.sel  { background: var(--all-bg);  border-color: var(--all-bd); }
+.overall-btn.all.sel .ob-label  { color: var(--all-tx); }
+.overall-btn.most.sel { background: var(--most-bg); border-color: var(--most-bd); }
+.overall-btn.most.sel .ob-label { color: var(--most-tx); }
+.overall-btn.some.sel { background: var(--some-bg); border-color: var(--some-bd); }
+.overall-btn.some.sel .ob-label { color: var(--some-tx); }
+
+/* ── Step 5 — Action plan ───────────────────────────────────────── */
+.action-needed { background: var(--some-bg); border: 1px solid var(--some-bd); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; }
+.action-needed p { font-size: .83rem; color: var(--some-tx); font-weight: 600; }
+.action-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.action-table th { background: var(--p); color: #fff; font-size: .73rem; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; padding: 10px 12px; text-align: left; }
+.action-table td { border-bottom: 1px solid var(--border); padding: 6px 4px; }
+.action-input { width: 100%; border: none; background: transparent; font-family: var(--font-body); font-size: .83rem; padding: 7px 10px; border-radius: 6px; outline: none; color: var(--text); }
+.action-input:focus { background: var(--pxl); }
+
+.sign-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+.sign-box { border-top: 2px solid var(--border); padding-top: 10px; }
+.sign-label { font-size: .75rem; color: var(--muted); font-weight: 600; letter-spacing: .3px; }
+
+/* ── Callouts ───────────────────────────────────────────────────── */
+.callout { border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; }
+.callout.info { background: var(--pxl); border: 1px solid var(--all-bd); }
+.callout.warn { background: var(--most-bg); border: 1px solid var(--most-bd); }
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; }
+.callout-text { font-size: .82rem; line-height: 1.6; color: var(--text); }
+.callout.info .callout-text strong { color: var(--p); }
+.callout.warn .callout-text strong { color: var(--most-tx); }
+
+/* ── Mobile overlay ─────────────────────────────────────────────── */
+#sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 99; }
+
+/* ── Print ──────────────────────────────────────────────────────── */
+@media print {
+  #sidebar, #topbar, #navfoot, #sb-overlay { display: none !important; }
+  #main { margin-left: 0 !important; }
+  #content { padding: 0 !important; max-width: none !important; }
+  .comp-body { display: block !important; }
+  .questions-panel { display: block !important; }
+  .indicators-panel.visible { display: block !important; }
+  .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+  .step-view { animation: none !important; }
+  body { font-size: 11pt; }
+  .comp-card { page-break-inside: avoid; }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+  #sidebar.open { transform: translateX(0); }
+  #sb-overlay.show { display: block; }
+  #main { margin-left: 0; }
+  #content { padding: 20px 16px; }
+  #topbar { padding: 0 16px; }
+  .btn-menu { display: block; }
+  #navfoot { padding: 12px 16px; }
+  .role-cards { grid-template-columns: 1fr; }
+  .level-selector { grid-template-columns: 1fr 1fr; }
+  .overall-buttons { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .sign-section { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="sb-overlay"></div>
+
+<div id="shell">
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo-text">Ahlsell Sverige</div>
+      <div class="sb-logo-sub">LÖNEGRUNDANDE SAMTAL</div>
+    </div>
+    <div id="sb-role-pill" class="sb-role-pill" style="display:none">
+      <span class="dot"></span>
+      <span id="sb-role-text"></span>
+    </div>
+    <nav class="sb-steps" id="sb-steps"><!-- rendered by JS --></nav>
+    <div class="sb-foot">
+      <div class="sb-help">Sparat automatiskt i webbläsaren · Skriv ut med knappen uppe till höger</div>
+    </div>
+  </aside>
+
+  <div id="main">
+    <!-- Topbar -->
+    <div id="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn-menu" id="menu-btn">☰</button>
+        <div class="topbar-title" id="topbar-title">Välj roll</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="progress-ring">
+          <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+          <span id="prog-text">Steg 1/6</span>
+        </div>
+        <button class="btn btn-print" onclick="window.print()">🖨 Skriv ut</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div id="content"></div>
+
+    <!-- Nav footer -->
+    <div id="navfoot">
+      <button class="btn btn-ghost" id="btn-prev">← Föregående</button>
+      <span class="step-count" id="step-count"></span>
+      <button class="btn btn-primary" id="btn-next">Nästa →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════════════════
+const ROLES = {
+  utesaljare:  { label: 'Utesäljare',  icon: '🚗', desc: 'Fältarbete, kundägarskap, prospektering och affärsutveckling med eget budgetansvar.' },
+  innesaljare: { label: 'Innesäljare', icon: '📞', desc: 'Inkommande och utgående kontakt, orderkonvertering, proaktiv merförsäljning.' },
+  saljsupport: { label: 'Säljsupport', icon: '⚙️', desc: 'Internt stöd till säljteamet, orderprecision och administrativa processer.' },
+  chef:        { label: 'Chef',        icon: '🎯', desc: 'Formellt ledarskapsansvar med fokus på målstyrning och medarbetarutveckling.' },
+};
+
+const LEVELS = [
+  { id:'some', label:'Infriar till viss del',    short:'Till viss del',   cls:'some' },
+  { id:'most', label:'Infriar till stor del',     short:'Till stor del',   cls:'most' },
+  { id:'all',  label:'Infriar alla förväntningar',short:'Alla förv.',      cls:'all'  },
+  { id:'over', label:'Överträffar förväntningar', short:'Överträffar',     cls:'over' },
+];
+
+const COMPS = [
+  {
+    id: 'arbete',
+    title: 'Arbetsuppgifternas innehåll, ansvar och svårighetsgrad',
+    desc: 'Behärskar rollen och hanterar ansvar och komplexitet på förväntad nivå.',
+    chefOnly: false,
+    questions: [
+      'Berätta om dina mest komplexa arbetsuppgifter det senaste året — hur hanterade du dem?',
+      'Vilka delar av din roll upplever du att du behärskar bäst respektive minst?',
+      'Hur söker du stöd när du ställs inför uppgifter utanför din komfortzon?',
+      'Har du tagit på dig uppgifter utanför din ordinarie roll — vad drev dig att göra det?',
+    ],
+    roleFocus: {
+      utesaljare:  'Självständig pipelinehantering, kundbesök, offertering och komplexa förhandlingar utan kontinuerlig handledning.',
+      innesaljare: 'Snabb och korrekt orderhantering, produktkunskap i bredd, förmåga att hantera kö och kundtryck parallellt.',
+      saljsupport: 'Hög precisionsnivå i administrativa rutiner, proaktiv hantering av avvikelser och internt stöd till sälj.',
+      chef:        'Förmåga att hantera ledarskapets komplexitet: personalärenden, budgetansvar, strategisk planering och operativt ansvar parallellt.',
+    },
+    indicators: {
+      over: ['Tar självständigt ansvar för komplexa uppgifter utanför befattningens ordinarie krav','Löser svåra problem proaktivt och söker aktivt ökad svårighetsgrad','Fungerar som intern resurs och kunskapskälla för kollegor'],
+      all:  ['Behärskar samtliga arbetsuppgifter på förväntad nivå','Hanterar befattningens svårighetsgrad konsekvent och tillförlitligt','Tar fullt ansvar för sina leveranser utan påminnelse'],
+      most: ['Behärskar i huvudsak arbetsuppgifterna men behöver ibland vägledning','Klarar förväntad svårighetsgrad men kan vara ryckig vid högt tryck','Tar generellt ansvar men kan behöva påminnelse i vissa situationer'],
+      some: ['Sköter inte arbetsuppgifterna tillfredsställande eller konsekvent','Undviker mer komplexa uppgifter och behöver täta instruktioner','Ansvarstagandet otillräckligt — leveranser missas eller kvalitet är för låg'],
+    },
+  },
+  {
+    id: 'mal',
+    title: 'Mål och måluppfyllnad',
+    desc: 'Uppfyller satta mål från Medarbetardialogen — se måluppföljningstabell på föregående steg.',
+    chefOnly: false,
+    questions: [
+      'Vilka av dina mål är du mest nöjd med att ha uppnått — vad bidrog till framgången?',
+      'Vilket mål var svårast att nå — vad lärde du dig av det?',
+      'Fanns det omständigheter utom din kontroll som påverkade måluppfyllnaden?',
+      'Hur följde du upp dina egna mål under året — vilka verktyg eller metoder använde du?',
+    ],
+    roleFocus: {
+      utesaljare:  'Budget, omsättningstillväxt, nya kunder, bruttomarginalmål och kundbesöksfrekvens.',
+      innesaljare: 'Ordervärde, konverteringsgrad, svarstider, merförsäljningsandel och kundnöjdhet.',
+      saljsupport: 'Processmål, felandelsmål, svarstider, internt servicelevel och förbättringsinitiativ.',
+      chef:        'Teamets samlade måluppfyllnad, medarbetarnöjdhet, rekryteringsmål och egna ledarutvecklingsmål.',
+    },
+    indicators: {
+      over: ['Överträffar samtliga uppsatta mål och driver ytterligare aktiviteter framgångsrikt','Levererar resultat utöver förväntan och sätter nya referenspunkter för teamet','Identifierar och agerar proaktivt på möjligheter att överskrida mål'],
+      all:  ['Når samtliga uppsatta mål konsekvent','Levererar det som förväntas och lite därtill','Kommunicerar proaktivt om avvikelser och justerar kurs i tid'],
+      most: ['Når majoriteten av uppsatta mål men missar något enstaka','Levererar grundresultat men med viss ojämnhet','Reagerar på avvikelser men inte alltid tillräckligt tidigt'],
+      some: ['Når inte upp till grundläggande målnivåer','Missar ett flertal eller viktiga mål utan adekvat åtgärdsplan','Bristfällig uppföljning av det egna arbetet'],
+    },
+  },
+  {
+    id: 'samarbete',
+    title: 'Samarbets- och initiativförmåga',
+    desc: 'Hur medarbetaren samverkar med omgivningen och tar egna initiativ bortom direkta instruktioner.',
+    chefOnly: false,
+    questions: [
+      'Berätta om ett tillfälle när du tog ett initiativ som fick positiv effekt för teamet eller en kund.',
+      'Hur bidrar du konkret till kollegors framgång — inte bara din egen?',
+      'Hur hanterar du situationer när du och en kollega har olika syn på hur något ska lösas?',
+      'Finns det situationer det senaste året där du sett ett behov men valt att inte agera — varför?',
+    ],
+    roleFocus: {
+      utesaljare:  'Intern koordination med innesäljare och säljsupport för kundlösningar. Proaktivt initiativtagande i prospektering och affärsutveckling.',
+      innesaljare: 'Proaktivt informationsutbyte om kundstatus och ordrar. Stöd till utesäljare och snabb intern kommunikation.',
+      saljsupport: 'Proaktivt stöd till hela säljteamet. Initiativ till processförbättringar och effektivitetshöjande åtgärder.',
+      chef:        'Tvärs-funktionellt samarbete, strategiska initiativ och att vara en förebild för samarbetskultur i teamet.',
+    },
+    indicators: {
+      over: ['Initierar och driver samarbeten tvärs avdelningar utan uppmaning','Delar aktivt kunskap och stärker hela teamets prestation','Tar naturligt ledarskap i gemensamma frågor utan formellt mandat','Identifierar förbättringsmöjligheter systematiskt och agerar'],
+      all:  ['Samarbetar effektivt och konstruktivt med kollegor och partners','Tar egna initiativ inom sin roll och delar information proaktivt','Löser problem i samverkan utan att vänta på instruktion','Bidrar aktivt i teammöten och gemensamma aktiviteter'],
+      most: ['Samarbetar när det efterfrågas och tar ibland egna initiativ','Delar information vid direkt förfrågan','Löser de flesta problem men kan behöva stöd vid komplexitet','Deltar i teamaktiviteter men bidrar passivt'],
+      some: ['Undviker eller försvårar samarbete, kommunicerar otillräckligt','Väntar på direkta instruktioner och tar sällan egna initiativ','Delar sällan information spontant med kollegor'],
+    },
+  },
+  {
+    id: 'affar',
+    title: 'Affärsorientering',
+    desc: 'Förståelse för och förmåga att agera kommersiellt — skapa värde för kund och Ahlsell.',
+    chefOnly: false,
+    questions: [
+      'Hur arbetar du konkret för att förstå kundens verkliga behov — inte bara det uttalade?',
+      'Kan du ge ett exempel på hur du aktivt arbetat för att öka lönsamheten i en affär?',
+      'Hur håller du dig uppdaterad om konkurrenter och marknadsutveckling?',
+      'Har du identifierat affärsmöjligheter utöver ditt ordinarie uppdrag — vad gjorde du?',
+    ],
+    roleFocus: {
+      utesaljare:  'Prospektering, behovsanalys, offert- och avtalsarbete. Bygga och utveckla lönsamma kundrelationer långsiktigt.',
+      innesaljare: 'Produktkunskap, proaktiv merförsäljning, orderkonvertering och ordervärdesoptimering.',
+      saljsupport: 'Förståelse för hur administrativt arbete påverkar kundupplevelsen och företagets lönsamhet.',
+      chef:        'Lönsamhetsstyrning, resursoptimering, marknadsorientering och förmåga att omsätta strategi i konkreta affärsbeslut.',
+    },
+    indicators: {
+      over: ['Förstår och agerar på marknadstrender och konkurrentsituation proaktivt','Driver lönsamma affärer med tydligt helhetsperspektiv','Bidrar aktivt till strategisk affärsutveckling och nya möjligheter','Skapar mervärde för kunden utöver ordinarie uppdrag'],
+      all:  ['Tydligt fokus på att skapa värde för kund och Ahlsell','Förstår och agerar konsekvent utifrån lönsamhetsdrivare','Agerar affärsmässigt och kundorienterat i vardagliga beslut','Hanterar invändningar och möjligheter med affärsmässig skärpa'],
+      most: ['Grundläggande affärsförståelse — hanterar ordinarie uppgifter affärsmässigt','Förstår i huvudsak hur rollen bidrar till Ahlsells mål','Agerar kundorienterat i de flesta situationer'],
+      some: ['Begränsad förståelse för affärsmässiga konsekvenser av beslut','Fokuserar på aktivitet snarare än resultat och lönsamhet','Missar affärsmöjligheter eller agerar på ett sätt som skadar relationer'],
+    },
+  },
+  {
+    id: 'engagemang',
+    title: 'Engagemang och förändringsvilja',
+    desc: 'Personligt engagemang och förmåga att anpassa sig till och driva förändringsarbete.',
+    chefOnly: false,
+    questions: [
+      'Berätta om senaste gången Ahlsell introducerade en förändring — hur tog du dig an den?',
+      'Kan du ge ett konkret exempel på hur du bidragit till att förbättra ett arbetssätt?',
+      'Vad driver ditt engagemang i det dagliga arbetet, och vad dämpar det?',
+      'Hur hanterar du perioder med hög arbetsbelastning eller osäkerhet om kommande förändringar?',
+    ],
+    roleFocus: {
+      utesaljare:  'Anpassning till digitala säljverktyg (CRM, offertverktyg), produktlanseringar och nya kundstrategier.',
+      innesaljare: 'Systemuppdateringar, sortimentsförändringar och förändringar i orderprocesser.',
+      saljsupport: 'Process- och systemförändringar, administrativa rutinförändringar och stödsystemutveckling.',
+      chef:        'Strategiska förändringsinitiativ och förmåga att leda team konstruktivt genom transformation.',
+    },
+    indicators: {
+      over: ['Driver aktivt förändringsinitiativ — är en naturlig förändringsambassadör','Inspirerar kollegor i förändring och ser möjligheter framför hinder','Högt och konsekvent engagemang som smittar av sig positivt','Söker aktivt ny kunskap och tar initiativ till kompetensutveckling'],
+      all:  ['Välkomnar förändring och anpassar sig effektivt till nya förutsättningar','Bidrar konstruktivt och konkret i förbättringsarbete','Konstant och pålitligt engagemang i sin roll','Positiv och öppen inställning till nya metoder och verktyg'],
+      most: ['Accepterar förändring med tydliga ramar och tillräckligt stöd','Visar i huvudsak gott engagemang men med viss variation','Anpassar sig till nya förutsättningar men kan vara trög i initialskedet'],
+      some: ['Aktivt eller passivt motstånd mot förändringar','Lågt och oregelbundet engagemang med negativ inverkan på teamklimatet','Svårigheter att anpassa sig till nya krav, system eller processer'],
+    },
+  },
+  {
+    id: 'ledarskap',
+    title: 'Förmåga att leda',
+    desc: 'Gäller befattningar med formellt ledarskapsansvar. Förmåga att sätta riktning, skapa engagemang och leverera resultat genom andra.',
+    chefOnly: true,
+    questions: [
+      'Hur arbetar du systematiskt med att utveckla dina medarbetare — inte bara de som underpresterar?',
+      'Beskriv ett tillfälle när du hanterade en prestation under förväntningarna — vad hände och vad lärde du dig?',
+      'Hur kommunicerar du Ahlsells mål på ett sätt som skapar meningsfullhet och engagemang?',
+      'Hur säkerställer du att medarbetare kan ge dig ärlig uppåtgående feedback?',
+    ],
+    roleFocus: {
+      chef: 'Gäller alla chefer med formellt personalansvar. Anpassa djupet utifrån ledarnivå — teamchef, avdelningschef eller regionchef.',
+    },
+    indicators: {
+      over: ['Skapar högpresterande team med stark kultur och tydlig riktning','Utvecklar medarbetare systematiskt och skapar intern succession','Hanterar konflikter proaktivt och stärker teamdynamiken','Kommunicerar visionärt och inspirerande — förebild för andra ledare'],
+      all:  ['Tydlig och konsekvent ledare som skapar trygghet och riktning','Sätter relevanta mål och följer upp regelbundet och strukturerat','Ger konstruktiv och utvecklande feedback löpande','Hanterar underprestation och beteendeproblem i tid med dokumentation'],
+      most: ['Utför grundläggande ledaruppgifter — mål sätts och följs upp','Medarbetarna förstår sina uppgifter och vad som förväntas av dem','Ger feedback men inte alltid tillräckligt löpande eller specifikt','Hanterar de flesta ledarsituationer men undviker ibland svåra samtal'],
+      some: ['Otydligt ledarskap — medarbetarna osäkra på förväntningar','Bristfällig uppföljning av mål och prestation','Undviker svåra samtal och låter problem eskalera','Bristande feedback- och utvecklingskultur i teamet'],
+    },
+  },
+];
+
+const STEPS = [
+  { id:'role',    label:'Roll & metadata',       sub:'Grundinformation' },
+  { id:'process', label:'Processguide',           sub:'Instruktion & syfte' },
+  { id:'goals',   label:'Mål & uppföljning',      sub:'Målmatris' },
+  { id:'comps',   label:'Kompetenser',            sub:'Bedömning & guide' },
+  { id:'summary', label:'Sammanfattning',         sub:'Samlad bedömning' },
+  { id:'action',  label:'Handlingsplan & noter', sub:'Åtgärder & avslut' },
+];
+
+// ══════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════
+let S = {
+  step: 0,
+  role: null,
+  meta: { employee:'', title:'', manager:'', year: new Date().getFullYear()+'', date:'' },
+  goals: [
+    { goal:'', outcome:'', level:'' },
+    { goal:'', outcome:'', level:'' },
+    { goal:'', outcome:'', level:'' },
+  ],
+  ratings: {}, // { compId: { level, comment } }
+  overallLevel: null,
+  overallComment: '',
+  notes: '',
+  actions: [
+    { area:'', action:'', responsible:'', date:'' },
+    { area:'', action:'', responsible:'', date:'' },
+  ],
+};
+
+function load() {
+  try {
+    const saved = localStorage.getItem('ahlsell_lon_v2');
+    if (saved) S = JSON.parse(saved);
+  } catch(e) {}
+}
+function save() {
+  try { localStorage.setItem('ahlsell_lon_v2', JSON.stringify(S)); } catch(e){}
+}
+function setState(patch) { Object.assign(S, patch); save(); render(); }
+
+// ══════════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════════
+const h = (tag, cls, html, attrs='') =>
+  `<${tag} class="${cls}" ${attrs}>${html}</${tag}>`;
+
+const levelMeta = { over:LEVELS[3], all:LEVELS[2], most:LEVELS[1], some:LEVELS[0] };
+
+function levelBadge(lvl) {
+  if (!lvl) return '';
+  const m = levelMeta[lvl];
+  return `<span class="rating-badge ${lvl}">${m.short}</span>`;
+}
+
+function visibleComps() {
+  return COMPS.filter(c => !c.chefOnly || S.role === 'chef');
+}
+
+function completedSteps() {
+  const done = new Set();
+  if (S.role) done.add(0);
+  if (S.meta.employee && S.meta.manager) done.add(1);
+  if (S.goals.some(g => g.goal)) done.add(2);
+  const vComps = visibleComps();
+  if (vComps.every(c => S.ratings[c.id]?.level)) done.add(3);
+  if (S.overallLevel) done.add(4);
+  return done;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════════════════════
+function render() {
+  renderSidebar();
+  renderTopbar();
+  renderContent();
+  renderNavfoot();
+}
+
+function renderSidebar() {
+  const done = completedSteps();
+  const stepsHtml = STEPS.map((st, i) => {
+    const cls = [
+      'sb-step',
+      i === S.step ? 'active' : '',
+      done.has(i) && i !== S.step ? 'done' : '',
+    ].join(' ');
+    const numInner = done.has(i) && i !== S.step ? '✓' : (i+1);
+    return `<div class="${cls}" onclick="goStep(${i})">
+      <div class="step-num">${numInner}</div>
+      <div>
+        <div class="step-label">${st.label}</div>
+        <div class="step-sub">${st.sub}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('sb-steps').innerHTML = stepsHtml;
+
+  const pill = document.getElementById('sb-role-pill');
+  const pillText = document.getElementById('sb-role-text');
+  if (S.role) {
+    pill.style.display = 'flex';
+    pillText.textContent = ROLES[S.role].label;
+  } else {
+    pill.style.display = 'none';
+  }
+}
+
+function renderTopbar() {
+  const total = STEPS.length;
+  const pct = Math.round(((S.step + 1) / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `Steg ${S.step+1}/${total}`;
+  document.getElementById('topbar-title').textContent = STEPS[S.step].label;
+}
+
+function renderContent() {
+  const el = document.getElementById('content');
+  const renders = [
+    renderStep0, renderStep1, renderStep2,
+    renderStep3, renderStep4, renderStep5,
+  ];
+  el.innerHTML = `<div class="step-view">${renders[S.step]()}</div>`;
+  bindEvents();
+}
+
+function renderNavfoot() {
+  const prev = document.getElementById('btn-prev');
+  const next = document.getElementById('btn-next');
+  const count = document.getElementById('step-count');
+
+  prev.disabled = S.step === 0;
+  next.textContent = S.step === STEPS.length - 1 ? '🖨 Skriv ut' : 'Nästa →';
+  next.onclick = S.step === STEPS.length - 1
+    ? () => window.print()
+    : () => goStep(S.step + 1);
+  prev.onclick = () => goStep(S.step - 1);
+
+  const done = completedSteps();
+  const total = visibleComps().length;
+  const rated = visibleComps().filter(c => S.ratings[c.id]?.level).length;
+  count.textContent = S.step === 3
+    ? `${rated}/${total} kompetenser bedömda`
+    : STEPS[S.step].sub;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 0 — Role & metadata
+// ══════════════════════════════════════════════════════════════════
+function renderStep0() {
+  const roleCards = Object.entries(ROLES).map(([id, r]) => `
+    <div class="role-card ${S.role===id?'selected':''}" onclick="selectRole('${id}')">
+      <div class="role-check">✓</div>
+      <div class="role-icon">${r.icon}</div>
+      <div class="role-name">${r.label}</div>
+      <div class="role-desc">${r.desc}</div>
+    </div>
+  `).join('');
+
+  const m = S.meta;
+  return `
+    <div class="section-title">Välj roll och ange grundinformation</div>
+    <div class="section-sub">Rollen styr vilket innehåll som visas i kompetensguiden. Du kan byta roll när som helst.</div>
+
+    <div class="role-cards">${roleCards}</div>
+
+    <div style="margin-top:28px">
+      <div class="card">
+        <div class="card-head"><strong style="font-family:var(--font-head);font-size:.95rem;color:var(--p)">Grundinformation om samtalet</strong></div>
+        <div class="card-body">
+          <div class="grid-2" style="margin-bottom:16px">
+            <div>
+              <label class="label">Medarbetarens namn</label>
+              <input class="input" id="m-employee" value="${m.employee}" placeholder="Förnamn Efternamn" oninput="updateMeta('employee',this.value)">
+            </div>
+            <div>
+              <label class="label">Befattning</label>
+              <input class="input" id="m-title" value="${m.title}" placeholder="T.ex. Utesäljare Region 83" oninput="updateMeta('title',this.value)">
+            </div>
+          </div>
+          <div class="grid-3">
+            <div>
+              <label class="label">Chef</label>
+              <input class="input" id="m-manager" value="${m.manager}" placeholder="Chefens namn" oninput="updateMeta('manager',this.value)">
+            </div>
+            <div>
+              <label class="label">Bedömt år</label>
+              <input class="input" id="m-year" value="${m.year}" placeholder="2024" oninput="updateMeta('year',this.value)">
+            </div>
+            <div>
+              <label class="label">Datum för samtal</label>
+              <input class="input" type="date" id="m-date" value="${m.date}" oninput="updateMeta('date',this.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 1 — Process guide
+// ══════════════════════════════════════════════════════════════════
+const PROC_STEPS = [
+  { n:1, title:'Förberedelse (båda parter)', body:'Chefen läser igenom Medarbetardialogen, samlar in statistik (A-sales, CRM, kundnöjdhet) och förbereder konkreta observationer per bedömningsområde. Medarbetaren reflekterar över årets prestationer och formulerar egna reflektioner.' },
+  { n:2, title:'Öppning — skapa rätt klimat', body:'Förklara samtalets syfte, struktur och tidsram tydligt. Bekräfta att dokumentationen hanteras konfidentiellt. Skapa ett tryggt och respektfullt klimat innan ni går in på bedömning.' },
+  { n:3, title:'Prestation & bedömning per område', body:'Gå igenom varje bedömningsområde med stöd av kompetensguiden i steg 4. Ge strukturerad, exemplifierande feedback. Låt medarbetaren reflektera och presentera sin syn — lyssna aktivt och ställ öppna frågor.' },
+  { n:4, title:'Helhetsbedömning & löneindikation', body:'Sammanfatta den samlade bedömningen och koppla tydligt till lönematrisen. Kommunicera transparent utan att ge bindande löften om exakt belopp. Förklara hur prestation och ersättningsnivå samverkar.' },
+  { n:5, title:'Avslut & eventuell handlingsplan', body:'Formulera tydliga handlingspunkter för eventuella utvecklingsområden med ansvarig och datum. Bekräfta tidplanen för lönebeskeden. Avsluta med framåtblick och positivt fokus.' },
+];
+
+function renderStep1() {
+  const procHtml = PROC_STEPS.map(p => `
+    <div class="proc-step" onclick="toggleProc(this)">
+      <div class="proc-num">${p.n}</div>
+      <div class="proc-content">
+        <div class="proc-title">${p.title}</div>
+        <div class="proc-body">${p.body}</div>
+      </div>
+      <div class="proc-arrow">▾</div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="section-title">Processguide</div>
+    <div class="section-sub">En välstrukturerad genomgång tar normalt 45–60 minuter. Klicka på varje steg för att expandera.</div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-body" style="padding:0 24px">
+        <div class="process-steps">${procHtml}</div>
+      </div>
+    </div>
+
+    <div class="principles">
+      <div class="principles-title">⚖️ Viktiga principer att hålla i minnet</div>
+      <div class="principle">Bedömningen ska vara <strong>differentierad</strong> — varje medarbetare bedöms utifrån sin individuella prestation (Vad och Hur).</div>
+      <div class="principle">Grunda alltid bedömningen i <strong>konkreta observationer</strong> och dokumenterade resultat — inte förväntningar om framtiden.</div>
+      <div class="principle">Vid bedömning <strong>"Infriar till viss del"</strong> i något område ska en handlingsplan upprättas och dokumenteras formellt.</div>
+      <div class="principle">Ahlsells värderingar — <strong>Öppenhet, Enkelhet och Ansvar</strong> — ska vara synliga i hur bedömningen motiveras och kommuniceras.</div>
+      <div class="principle">Lönesättningen får <strong>aldrig diskriminera</strong> utifrån diskrimineringslagens grunder. Föräldralediga hanteras som övriga anställda.</div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 2 — Goals
+// ══════════════════════════════════════════════════════════════════
+function renderStep2() {
+  const rows = S.goals.map((g, i) => `
+    <tr>
+      <td><textarea class="goal-input" rows="2" placeholder="Beskriv målet…" oninput="updateGoal(${i},'goal',this.value)">${g.goal}</textarea></td>
+      <td><textarea class="goal-input" rows="2" placeholder="Utfall och kommentar…" oninput="updateGoal(${i},'outcome',this.value)">${g.outcome}</textarea></td>
+      <td>
+        <select class="level-select" onchange="updateGoal(${i},'level',this.value)">
+          <option value="">— Välj —</option>
+          ${LEVELS.map(l => `<option value="${l.id}" ${g.level===l.id?'selected':''}>${l.short}</option>`).join('')}
+        </select>
+      </td>
+      <td><button class="btn-del" onclick="removeGoal(${i})">✕</button></td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="section-title">Mål & måluppfyllnad</div>
+    <div class="section-sub">Hämta målen från Medarbetardialogen. Ange utfall och bedömning för varje mål. Du kan lägga till och ta bort rader.</div>
+
+    <div class="callout info" style="margin-bottom:20px">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text"><strong>Tips:</strong> Mål bör vara SMART — Specifika, Mätbara, Accepterade, Realistiska och Tidssatta. Använd konkreta siffror och fakta i utfallsbeskrivningen för att stödja bedömningen.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding:0;overflow:auto">
+        <table class="goal-table">
+          <thead>
+            <tr>
+              <th style="width:35%">Mål (från Medarbetardialogen)</th>
+              <th style="width:40%">Utfall och kommentar</th>
+              <th style="width:17%">Bedömning</th>
+              <th style="width:8%"></th>
+            </tr>
+          </thead>
+          <tbody id="goals-body">${rows}</tbody>
+        </table>
+        <div style="padding:12px 16px">
+          <button class="btn-add-goal" onclick="addGoal()">+ Lägg till mål</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 3 — Competencies
+// ══════════════════════════════════════════════════════════════════
+function renderStep3() {
+  if (!S.role) {
+    return `
+      <div class="section-title">Kompetenser & bedömningsguide</div>
+      <div class="callout warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-text"><strong>Välj roll först.</strong> Gå tillbaka till steg 1 och välj medarbetarens roll — innehållet anpassas sedan automatiskt.</div>
+      </div>
+    `;
+  }
+
+  const comps = visibleComps();
+  const cardsHtml = comps.map(c => renderCompCard(c)).join('');
+
+  return `
+    <div class="section-title">Kompetenser & bedömningsguide</div>
+    <div class="section-sub">
+      Klicka på ett område för att expandera. Välj bedömningsnivå — beteendeindikatorerna uppdateras automatiskt.
+      Hovra eller klicka på <strong>💬 Stödfrågor</strong> för coachingfrågor att använda i samtalet.
+      ${S.role ? `<span style="background:var(--pxl);border:1px solid var(--border);border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:700;color:var(--p);margin-left:8px">${ROLES[S.role].label}</span>` : ''}
+    </div>
+    <div class="comp-cards">${cardsHtml}</div>
+  `;
+}
+
+function renderCompCard(c) {
+  const rating = S.ratings[c.id] || {};
+  const lvl = rating.level;
+  const cardCls = ['comp-card', lvl ? 'has-rating r-'+lvl : '', 'open' /* start open for first */ ].join(' ');
+
+  const roleFocusTxt = S.role && c.roleFocus[S.role]
+    ? c.roleFocus[S.role]
+    : (c.roleFocus.chef || '');
+
+  const levelBtns = LEVELS.map(l => `
+    <div class="level-btn ${l.cls} ${lvl===l.id?'sel':''}" onclick="setRating('${c.id}','${l.id}')">
+      <div class="lb-label">${l.short}</div>
+    </div>
+  `).join('');
+
+  const indicatorsHtml = LEVELS.map(l => {
+    const items = c.indicators[l.id].map(i => `<div class="ind-item">${i}</div>`).join('');
+    return `<div class="indicators-panel ${l.cls} ${lvl===l.id?'visible':''}" id="ind-${c.id}-${l.id}">
+      <div class="ind-title">${l.label}</div>
+      ${items}
+    </div>`;
+  }).join('');
+
+  const questionsHtml = c.questions.map(q => `<li>${q}</li>`).join('');
+
+  return `
+    <div class="comp-card ${lvl?'has-rating r-'+lvl:''}" id="card-${c.id}">
+      <div class="comp-header" onclick="toggleComp('${c.id}')">
+        <div class="comp-num">${COMPS.indexOf(c)+1}</div>
+        <div class="comp-title-wrap">
+          <div class="comp-title">${c.title}</div>
+          <div class="comp-desc-short">${c.desc}</div>
+        </div>
+        <div class="comp-badges">
+          ${lvl ? levelBadge(lvl) : ''}
+          <div class="comp-chevron">▾</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-inner">
+          ${roleFocusTxt ? `
+          <div class="role-focus">
+            <div class="role-focus-icon">${ROLES[S.role]?.icon||'🎯'}</div>
+            <div class="role-focus-content">
+              <div class="role-focus-label">${ROLES[S.role]?.label} — rollens fokus</div>
+              ${roleFocusTxt}
+            </div>
+          </div>` : ''}
+
+          <button class="questions-toggle" id="qtog-${c.id}" onclick="toggleQuestions('${c.id}')">
+            💬 Stödfrågor att ställa i samtalet
+          </button>
+          <div class="questions-panel" id="qpanel-${c.id}">
+            <ol style="padding-left:4px;list-style:none">${questionsHtml}</ol>
+          </div>
+
+          <label class="label" style="margin-bottom:8px">Välj bedömningsnivå</label>
+          <div class="level-selector">${levelBtns}</div>
+
+          ${indicatorsHtml}
+
+          <label class="label" style="margin-top:8px">Motivering och konkreta exempel</label>
+          <textarea class="textarea" placeholder="Beskriv din bedömning med konkreta observationer och exempel…" oninput="setComment('${c.id}',this.value)">${rating.comment||''}</textarea>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 4 — Summary
+// ══════════════════════════════════════════════════════════════════
+function renderStep4() {
+  const comps = visibleComps();
+  const rows = comps.map(c => {
+    const r = S.ratings[c.id] || {};
+    return `
+      <div class="summary-row ${r.level?'has-rating r-'+r.level:''}">
+        <div class="sum-num">${COMPS.indexOf(c)+1}</div>
+        <div class="sum-title-wrap" style="flex:1">
+          <div class="sum-title">${c.title}</div>
+          ${r.comment ? `<div class="sum-comment">${r.comment}</div>` : ''}
+        </div>
+        <div class="sum-rating">
+          ${r.level ? levelBadge(r.level) : `<span class="sum-na">Ej bedömd</span>`}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const overallBtns = ['some','most','all','over'].map(id => {
+    const m = levelMeta[id];
+    return `<div class="overall-btn ${id} ${S.overallLevel===id?'sel':''}" onclick="setOverall('${id}')">
+      <div class="ob-label">${m.short}</div>
+      <div class="ob-sub">${m.label}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="section-title">Sammanfattning & samlad bedömning</div>
+    <div class="section-sub">Översikt av samtliga bedömningsområden. Sätt en samlad bedömning för hela prestationen.</div>
+
+    <div class="summary-grid" style="margin-bottom:24px">${rows}</div>
+
+    <div class="card">
+      <div class="card-head">
+        <strong style="font-family:var(--font-head);font-size:.95rem;color:var(--p)">Samlad bedömning prestation</strong>
+      </div>
+      <div class="card-body">
+        <label class="label">Välj övergripande bedömningsnivå</label>
+        <div class="overall-buttons" style="margin-bottom:16px">${overallBtns}</div>
+        <label class="label">Övergripande motivering</label>
+        <textarea class="textarea" style="min-height:100px" placeholder="Summera den samlade prestationen med fokus på de mest avgörande faktorerna för årets bedömning…" oninput="updateOverallComment(this.value)">${S.overallComment}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  STEP 5 — Action plan & notes
+// ══════════════════════════════════════════════════════════════════
+function renderStep5() {
+  const lowAreas = visibleComps().filter(c => S.ratings[c.id]?.level === 'some');
+
+  const actionHtml = lowAreas.length > 0 ? `
+    <div class="action-needed">
+      <p>⚠️ Handlingsplan krävs för: ${lowAreas.map(c=>c.title).join(', ')}</p>
+    </div>
+  ` : `<div class="callout info" style="margin-bottom:16px">
+    <div class="callout-icon">✅</div>
+    <div class="callout-text">Ingen obligatorisk handlingsplan — inga bedömningsområden på nivån "Infriar till viss del". Du kan ändå dokumentera utvecklingsinsatser nedan.</div>
+  </div>`;
+
+  const actRows = S.actions.map((a, i) => `
+    <tr>
+      <td><input class="action-input" value="${a.area}" placeholder="Bedömningsområde…" oninput="updateAction(${i},'area',this.value)"></td>
+      <td><input class="action-input" value="${a.action}" placeholder="Åtgärd / aktivitet…" oninput="updateAction(${i},'action',this.value)"></td>
+      <td><input class="action-input" value="${a.responsible}" placeholder="Vem?" oninput="updateAction(${i},'responsible',this.value)"></td>
+      <td><input class="action-input" type="date" value="${a.date}" oninput="updateAction(${i},'date',this.value)"></td>
+      <td><button class="btn-del" onclick="removeAction(${i})">✕</button></td>
+    </tr>
+  `).join('');
+
+  const m = S.meta;
+  return `
+    <div class="section-title">Handlingsplan, noter & avslut</div>
+    <div class="section-sub">Dokumentera eventuella åtgärder, klistra in statistikunderlag och signera.</div>
+
+    ${actionHtml}
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-head"><strong style="font-family:var(--font-head);font-size:.95rem;color:var(--p)">Handlingsplan</strong></div>
+      <div class="card-body" style="padding:0;overflow:auto">
+        <table class="action-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Bedömningsområde</th>
+              <th style="width:35%">Åtgärd / Aktivitet</th>
+              <th style="width:15%">Ansvarig</th>
+              <th style="width:17%">Uppföljningsdatum</th>
+              <th style="width:8%"></th>
+            </tr>
+          </thead>
+          <tbody>${actRows}</tbody>
+        </table>
+        <div style="padding:12px 16px">
+          <button class="btn-add-goal" onclick="addAction()">+ Lägg till åtgärd</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-head"><strong style="font-family:var(--font-head);font-size:.95rem;color:var(--p)">📊 Statistik och övrigt underlag</strong></div>
+      <div class="card-body">
+        <div class="section-sub" style="margin-bottom:12px">Klistra in statistik från A-sales, CRM, kundnöjdhet, ordervärde eller annat underlag som legat till grund för bedömningen.</div>
+        <textarea class="textarea" style="min-height:130px" placeholder="Klistra in eller skriv statistik och annat underlag här…" oninput="updateNotes(this.value)">${S.notes}</textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><strong style="font-family:var(--font-head);font-size:.95rem;color:var(--p)">Underskrifter</strong></div>
+      <div class="card-body">
+        <div class="callout info" style="margin-bottom:20px">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-text">Medarbetarens underskrift bekräftar att samtalet ägt rum och att bedömningen kommunicerats — <strong>inte</strong> att hen instämmer i alla delar av bedömningen.</div>
+        </div>
+        <div class="sign-section">
+          <div>
+            <div class="sign-box">
+              <div class="sign-label">Medarbetare — ${m.employee||'______________________'}</div>
+            </div>
+            <div style="margin-top:8px;font-size:.75rem;color:var(--muted)">Underskrift och datum</div>
+          </div>
+          <div>
+            <div class="sign-box">
+              <div class="sign-label">Chef — ${m.manager||'______________________'}</div>
+            </div>
+            <div style="margin-top:8px;font-size:.75rem;color:var(--muted)">Underskrift och datum</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;text-align:center">
+      <button class="btn btn-acc" style="font-size:1rem;padding:14px 32px" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  BIND EVENTS (called after render)
+// ══════════════════════════════════════════════════════════════════
+function bindEvents() {
+  // Auto-open first unrated comp card
+  if (S.step === 3) {
+    const comps = visibleComps();
+    const firstUnrated = comps.find(c => !S.ratings[c.id]?.level);
+    // By default all cards are closed. Open first unrated:
+    const toOpen = firstUnrated || comps[0];
+    if (toOpen) {
+      const el = document.getElementById('card-' + toOpen.id);
+      if (el) el.classList.add('open');
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  ACTIONS
+// ══════════════════════════════════════════════════════════════════
+function goStep(n) {
+  if (n < 0 || n >= STEPS.length) return;
+  S.step = n; save();
+  render();
+  document.getElementById('content').scrollIntoView({ behavior:'smooth', block:'start' });
+  closeSidebar();
+}
+
+function selectRole(id) {
+  S.role = id; save(); render();
+}
+
+function updateMeta(key, val) {
+  S.meta[key] = val; save();
+  // Lightweight update — don't re-render everything
+  const pill = document.getElementById('sb-role-text');
+  if (pill && S.role) pill.textContent = ROLES[S.role].label;
+}
+
+function updateGoal(i, key, val) {
+  S.goals[i][key] = val; save();
+}
+
+function addGoal() {
+  S.goals.push({ goal:'', outcome:'', level:'' }); save();
+  render();
+}
+
+function removeGoal(i) {
+  S.goals.splice(i, 1); save(); render();
+}
+
+function setRating(compId, level) {
+  if (!S.ratings[compId]) S.ratings[compId] = { level:'', comment:'' };
+  S.ratings[compId].level = level; save();
+
+  // Update card class
+  const card = document.getElementById('card-' + compId);
+  if (card) {
+    card.className = card.className.replace(/has-rating r-\w+/g, '').trim();
+    card.classList.add('has-rating', 'r-' + level);
+  }
+
+  // Update level buttons
+  LEVELS.forEach(l => {
+    const btn = card?.querySelector('.level-btn.' + l.cls);
+    if (btn) btn.classList.toggle('sel', l.id === level);
+  });
+
+  // Update indicators
+  LEVELS.forEach(l => {
+    const panel = document.getElementById(`ind-${compId}-${l.id}`);
+    if (panel) panel.classList.toggle('visible', l.id === level);
+  });
+
+  // Update badge in header
+  const badges = card?.querySelector('.comp-badges');
+  if (badges) {
+    const existing = badges.querySelector('.rating-badge');
+    if (existing) existing.remove();
+    badges.insertAdjacentHTML('afterbegin', levelBadge(level));
+  }
+
+  // Update sidebar done count
+  renderSidebar();
+  renderNavfoot();
+}
+
+function setComment(compId, val) {
+  if (!S.ratings[compId]) S.ratings[compId] = { level:'', comment:'' };
+  S.ratings[compId].comment = val; save();
+}
+
+function setOverall(level) {
+  S.overallLevel = level; save();
+  // Update buttons without full re-render
+  document.querySelectorAll('.overall-btn').forEach(btn => {
+    LEVELS.forEach(l => {
+      if (btn.classList.contains(l.cls)) btn.classList.toggle('sel', l.id === level);
+    });
+  });
+  renderSidebar();
+}
+
+function updateOverallComment(val) { S.overallComment = val; save(); }
+function updateNotes(val) { S.notes = val; save(); }
+function updateAction(i, key, val) { S.actions[i][key] = val; save(); }
+function addAction() { S.actions.push({area:'',action:'',responsible:'',date:''}); save(); render(); }
+function removeAction(i) { S.actions.splice(i,1); save(); render(); }
+
+function toggleComp(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('open');
+}
+
+function toggleProc(el) { el.classList.toggle('open'); }
+
+function toggleQuestions(compId) {
+  const tog = document.getElementById('qtog-' + compId);
+  const panel = document.getElementById('qpanel-' + compId);
+  if (tog && panel) {
+    tog.classList.toggle('open');
+    panel.classList.toggle('open');
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+
+document.getElementById('menu-btn').onclick = toggleSidebar;
+document.getElementById('sb-overlay').onclick = closeSidebar;
+
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+load();
+render();
+</script>
+</body>
+</html>
