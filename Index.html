@@ -92,6 +92,47 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .step-sub { font-size: .7rem; color: rgba(255,255,255,.3); margin-top: 1px; }
 .sb-foot { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
 .sb-help { font-size: .72rem; color: rgba(255,255,255,.35); line-height: 1.5; }
+.btn-reset {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; margin-top: 12px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px; padding: 8px 14px; font-size: .75rem; font-weight: 600;
+  color: rgba(255,255,255,.4); cursor: pointer; transition: all var(--trans);
+  font-family: var(--font-body); letter-spacing: .2px;
+}
+.btn-reset:hover { background: rgba(220,60,60,.25); border-color: rgba(220,60,60,.4); color: rgba(255,180,180,.9); }
+.btn-reset svg { flex-shrink: 0; }
+
+/* Reset confirmation modal */
+#reset-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(10,20,40,.6); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+#reset-modal.show { display: flex; }
+.reset-box {
+  background: var(--card); border-radius: 16px; padding: 32px 28px;
+  max-width: 420px; width: 90%; box-shadow: var(--shadow-lg);
+  animation: scaleIn .2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes scaleIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+.reset-icon {
+  width: 52px; height: 52px; border-radius: 14px; background: #fff1f1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 16px;
+}
+.reset-title { font-family: var(--font-head); font-weight: 800; font-size: 1.15rem; color: var(--text); margin-bottom: 8px; }
+.reset-body { font-size: .87rem; color: var(--muted); line-height: 1.65; margin-bottom: 8px; }
+.reset-warn {
+  background: #fff8f0; border: 1px solid #fcd34d; border-radius: 8px;
+  padding: 10px 14px; font-size: .82rem; color: #78350f; font-weight: 600;
+  margin-bottom: 22px; display: flex; gap: 8px; align-items: flex-start;
+}
+.reset-actions { display: flex; gap: 10px; }
+.btn-cancel { flex: 1; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px; font-size: .88rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: var(--font-body); transition: all var(--trans); }
+.btn-cancel:hover { background: var(--border); color: var(--text); }
+.btn-confirm-reset { flex: 1; background: #dc2626; border: none; border-radius: 10px; padding: 11px; font-size: .88rem; font-weight: 700; color: #fff; cursor: pointer; font-family: var(--font-body); transition: all var(--trans); }
+.btn-confirm-reset:hover { background: #b91c1c; }
 
 /* ── Top bar ────────────────────────────────────────────────────── */
 #topbar {
@@ -405,6 +446,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <div id="sb-overlay"></div>
 
+<!-- Reset confirmation modal -->
+<div id="reset-modal">
+  <div class="reset-box">
+    <div class="reset-icon">⚠️</div>
+    <div class="reset-title">Återställ dokumentet?</div>
+    <div class="reset-body">
+      Alla uppgifter om medarbetare, mål, bedömningar, motiveringar och handlingsplan raderas permanent.
+    </div>
+    <div class="reset-warn">
+      ⚠️&nbsp; Ingen data sparas — detta går inte att ångra. Se till att du har laddat ned PDF:en först om du behöver dokumentationen.
+    </div>
+    <div class="reset-actions">
+      <button class="btn-cancel" onclick="closeResetModal()">Avbryt</button>
+      <button class="btn-confirm-reset" onclick="confirmReset()">Ja, återställ allt</button>
+    </div>
+  </div>
+</div>
+
 <div id="shell">
   <!-- Sidebar -->
   <aside id="sidebar">
@@ -419,6 +478,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <nav class="sb-steps" id="sb-steps"><!-- rendered by JS --></nav>
     <div class="sb-foot">
       <div class="sb-help">Sparat automatiskt i webbläsaren · Skriv ut med knappen uppe till höger</div>
+      <button class="btn-reset" onclick="openResetModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Nytt samtal / Återställ
+      </button>
     </div>
   </aside>
 
@@ -1288,6 +1351,28 @@ function closeSidebar() {
 document.getElementById('menu-btn').onclick = toggleSidebar;
 document.getElementById('sb-overlay').onclick = closeSidebar;
 
+function openResetModal()  { document.getElementById('reset-modal').classList.add('show'); }
+function closeResetModal() { document.getElementById('reset-modal').classList.remove('show'); }
+function confirmReset() {
+  try { localStorage.removeItem('ahlsell_lon_v2'); } catch(e) {}
+  S = {
+    step: 0, role: null,
+    meta: { employee:'', title:'', manager:'', year: new Date().getFullYear()+'', date:'' },
+    goals: [
+      { goal:'', outcome:'', level:'' },
+      { goal:'', outcome:'', level:'' },
+      { goal:'', outcome:'', level:'' },
+    ],
+    ratings: {}, overallLevel: null, overallComment: '',
+    notes: '', actions: [
+      { area:'', action:'', responsible:'', date:'' },
+      { area:'', action:'', responsible:'', date:'' },
+    ],
+  };
+  closeResetModal();
+  render();
+}
+
 // ══════════════════════════════════════════════════════════════════
 //  PDF GENERATION — 100% in-browser via jsPDF, zero external calls
 // ══════════════════════════════════════════════════════════════════
@@ -1353,6 +1438,90 @@ function _buildPDF() {
     return doc.splitTextToSize(String(text || ''), maxW);
   }
 
+  // ── PDF Icon system: pure vector shapes, no emoji ────────────────
+  const Icon = {
+    // Small colored square badge with a letter label
+    badge(x, y, w, h, fillC, label, labelC) {
+      setFill(fillC); setDraw(fillC);
+      doc.roundedRect(x, y, w, h, 1.2, 1.2, 'F');
+      if (label) {
+        setTxt(labelC || C.white);
+        setFont('bold', h * 0.58);
+        doc.text(label, x + w / 2, y + h * 0.73, { align: 'center' });
+      }
+    },
+    // Lock: body + shackle drawn as lines
+    lock(x, y, s, fillC) {
+      const lw = doc.getLineWidth();
+      doc.setLineWidth(0.7);
+      setDraw(fillC);
+      // shackle
+      // shackle as U-shape (3 lines — jsPDF has no native arc)
+      doc.line(x + s*0.28, y + s*0.48, x + s*0.28, y + s*0.22);
+      doc.line(x + s*0.28, y + s*0.22, x + s*0.72, y + s*0.22);
+      doc.line(x + s*0.72, y + s*0.22, x + s*0.72, y + s*0.48);
+      doc.setLineWidth(0.2);
+      // body
+      setFill(fillC);
+      doc.roundedRect(x + s*0.08, y + s*0.44, s*0.84, s*0.52, 1.2, 1.2, 'F');
+      // keyhole dot
+      setFill(C.white); setDraw(C.white);
+      doc.circle(x + s*0.5, y + s*0.65, s*0.09, 'F');
+      doc.setLineWidth(lw);
+    },
+    // Warning triangle with ! inside
+    warn(x, y, s, fillC, txC) {
+      setFill(fillC); setDraw(fillC);
+      doc.triangle(x + s*0.5, y, x + s, y + s, x, y + s, 'F');
+      setTxt(txC || C.white);
+      setFont('bold', s * 3.8);
+      doc.text('!', x + s*0.5, y + s*0.88, { align: 'center' });
+    },
+    // Circle with letter
+    circle(x, y, r, fillC, letter, letterC) {
+      setFill(fillC); setDraw(fillC);
+      doc.circle(x, y, r, 'F');
+      if (letter) {
+        setTxt(letterC || C.white);
+        setFont('bold', r * 7);
+        doc.text(letter, x, y + r * 2.3, { align: 'center' });
+      }
+    },
+    // Document / page icon
+    document(x, y, s, fillC) {
+      setFill(fillC); setDraw(C.border);
+      doc.roundedRect(x, y, s*0.76, s, 1, 1, 'FD');
+      setFill(C.white);
+      doc.triangle(x+s*0.48, y, x+s*0.76, y, x+s*0.76, y+s*0.26, 'F');
+      setDraw(fillC); doc.setLineWidth(0.4);
+      doc.line(x+s*0.48, y, x+s*0.48, y+s*0.26);
+      doc.line(x+s*0.48, y+s*0.26, x+s*0.76, y+s*0.26);
+      doc.setLineWidth(0.25);
+      setDraw([180,190,205]);
+      [0.42,0.56,0.70,0.84].forEach(r => doc.line(x+s*0.12, y+s*r, x+s*0.64, y+s*r));
+      doc.setLineWidth(0.2);
+    },
+    // Three vertical bars (chart)
+    chart(x, y, s, fillC) {
+      const bars = [[0,0.45],[0.26,0.72],[0.52,0.58],[0.78,0.90]];
+      bars.forEach(([ox, h], i) => {
+        setFill(i === 3 ? fillC : C.primary2);
+        doc.rect(x + s*ox, y + s*(1-h), s*0.19, s*h, 'F');
+      });
+    },
+    // Speech bubble
+    bubble(x, y, s, fillC) {
+      setFill(fillC); setDraw(fillC);
+      doc.roundedRect(x, y, s, s*0.72, 1.5, 1.5, 'F');
+      doc.triangle(x+s*0.18, y+s*0.68, x+s*0.44, y+s*0.68, x+s*0.14, y+s, 'F');
+      doc.setLineWidth(0.45); setDraw(C.white);
+      doc.line(x+s*0.18, y+s*0.24, x+s*0.82, y+s*0.24);
+      doc.line(x+s*0.18, y+s*0.43, x+s*0.76, y+s*0.43);
+      doc.line(x+s*0.18, y+s*0.60, x+s*0.54, y+s*0.60);
+      doc.setLineWidth(0.2);
+    },
+  };
+
   // ── Page management ──────────────────────────────────────────────
   function addPage() {
     if (pageNum > 0) doc.addPage();
@@ -1371,7 +1540,8 @@ function _buildPDF() {
     setFill(C.border);
     doc.rect(0, PH - FOOTER_H, PW, FOOTER_H, 'F');
     setTxt(C.muted); setFont('normal', 7);
-    doc.text('Konfidentiellt — Ahlsell Sverige AB', ML, PH - 4);
+    Icon.badge(ML, PH-8.5, 3.5, 3.5, C.someTx, '', C.white);
+    doc.text('Konfidentiellt — Ahlsell Sverige AB', ML + 5, PH - 4);
     doc.text(`Sida ${pageNum}`, PW - MR, PH - 4, { align:'right' });
     return 14; // return starting y
   }
@@ -1539,7 +1709,8 @@ function _buildPDF() {
   setFill([254,226,226]); setDraw(C.someBd);
   doc.roundedRect(ML, y, CW, 14, 2, 2, 'FD');
   setTxt(C.someTx); setFont('bold', 8);
-  doc.text('🔒  KONFIDENTIELLT DOKUMENT', ML + 5, y + 5.5);
+  Icon.lock(ML + 5, y + 1.2, 4.5, C.someTx);
+  doc.text('KONFIDENTIELLT DOKUMENT', ML + 12, y + 5.5);
   setFont('normal', 7.5);
   doc.text('Detta dokument innehåller personuppgifter och hanteras i enlighet med Ahlsells riktlinjer och GDPR.', ML + 5, y + 10);
   y += 20;
@@ -1547,7 +1718,8 @@ function _buildPDF() {
   // TOC box
   y = 145;
   setFill(C.primaryXL); doc.roundedRect(ML, y, CW, 75, 3, 3, 'F');
-  setTxt(C.primary); setFont('bold', 9); doc.text('INNEHÅLL', ML + 5, y + 8);
+  Icon.document(ML + 5, y + 1.5, 5, C.primary);
+  setTxt(C.primary); setFont('bold', 9); doc.text('INNEHÅLL', ML + 14, y + 8);
   setDraw(C.border); doc.line(ML + 5, y + 10, ML + CW - 5, y + 10);
   const toc = [
     ['1', 'Roll och grundinformation', '1'],
@@ -1729,7 +1901,8 @@ function _buildPDF() {
     const qHeight = qLines.reduce((acc, q) => acc + wrap(q, CW-10).length * 4.5, 0) + 14;
     doc.roundedRect(ML, y, CW, qHeight, 2, 2, 'FD');
     setTxt(C.allTx); setFont('bold', 7.5);
-    doc.text('STÖDFRÅGOR TILL SAMTALET', ML+5, y+5.5);
+    Icon.bubble(ML+5, y+0.8, 5, C.allTx);
+    doc.text('STÖDFRÅGOR TILL SAMTALET', ML+13, y+5.5);
     setFont('normal', 8);
     let qy = y + 10;
     c.questions.forEach((q, qi) => {
@@ -1806,9 +1979,10 @@ function _buildPDF() {
     setFill(C.someBg); setDraw(C.someBd);
     const warnH = wrap('Krav på handlingsplan: '+lowAreas.map(c=>c.title).join(', '), CW-10).length * 4.5 + 8;
     doc.roundedRect(ML, y, CW, warnH, 2, 2, 'FD');
+    Icon.warn(ML+4, y+1.5, 5, C.mostBg, C.someTx);
     setTxt(C.someTx); setFont('bold', 8);
-    const wLines = wrap('Krav på handlingsplan: '+lowAreas.map(c=>c.title).join(', '), CW-10);
-    wLines.forEach((ln,i) => doc.text(ln, ML+5, y+5+i*4.5));
+    const wLines = wrap('Krav på handlingsplan: '+lowAreas.map(c=>c.title).join(', '), CW-16);
+    wLines.forEach((ln,i) => doc.text(ln, ML+12, y+5+i*4.5));
     y += warnH + 5;
   }
 
@@ -1843,7 +2017,8 @@ function _buildPDF() {
   if (S.notes.trim()) {
     y = checkY(y, 30);
     y += 4;
-    setTxt(C.primary); setFont('bold', 9); doc.text('Statistik och övrigt underlag', ML, y); y += 5;
+    Icon.chart(ML, y - 1, 5, C.accent);
+    setTxt(C.primary); setFont('bold', 9); doc.text('Statistik och övrigt underlag', ML + 7, y); y += 5;
     const nLines = wrap(S.notes, CW-4);
     const nh = nLines.length * 4.5 + 8;
     y = checkY(y, nh);
