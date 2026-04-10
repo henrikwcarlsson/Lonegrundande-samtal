@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lönegrundande samtal · Ahlsell Region 83</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --p: #003865;
@@ -1136,9 +1137,15 @@ function renderStep5() {
       </div>
     </div>
 
-    <div style="margin-top:24px;text-align:center">
-      <button class="btn btn-acc" style="font-size:1rem;padding:14px 32px" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-acc" id="btn-pdf" style="font-size:1rem;padding:14px 32px" onclick="generatePDF()">
+        📄 Ladda ned som PDF
+      </button>
+      <button class="btn btn-ghost" style="font-size:.9rem;padding:14px 24px" onclick="window.print()">
+        🖨 Skriv ut
+      </button>
     </div>
+    <p style="text-align:center;font-size:.73rem;color:var(--muted);margin-top:10px">All data stannar i din webbläsare — inget skickas externt</p>
   `;
 }
 
@@ -1280,6 +1287,603 @@ function closeSidebar() {
 
 document.getElementById('menu-btn').onclick = toggleSidebar;
 document.getElementById('sb-overlay').onclick = closeSidebar;
+
+// ══════════════════════════════════════════════════════════════════
+//  PDF GENERATION — 100% in-browser via jsPDF, zero external calls
+// ══════════════════════════════════════════════════════════════════
+function generatePDF() {
+  const btn = document.getElementById('btn-pdf');
+  if (btn) { btn.textContent = '⏳ Genererar PDF…'; btn.disabled = true; }
+
+  setTimeout(() => { // let UI update first
+    try { _buildPDF(); }
+    finally {
+      if (btn) { btn.textContent = '📄 Ladda ned som PDF'; btn.disabled = false; }
+    }
+  }, 60);
+}
+
+function _buildPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+
+  // ── Constants ───────────────────────────────────────────────────
+  const PW = 210, PH = 297;
+  const ML = 14, MR = 14, MT = 14, MB = 14;
+  const CW = PW - ML - MR; // 182mm
+  const FOOTER_H = 10;
+  const BODY_MAX = PH - MB - FOOTER_H;
+
+  // Brand colours (RGB)
+  const C = {
+    primary:    [0,  56, 101],
+    primary2:   [21, 97, 160],
+    primaryXL:  [232,240,248],
+    accent:     [232,100,12],
+    white:      [255,255,255],
+    text:       [26, 35, 50],
+    muted:      [100,116,139],
+    border:     [221,227,236],
+    overBg:     [209,250,229], overTx:[6,  95, 70],  overBd:[110,231,183],
+    allBg:      [219,234,254], allTx: [30, 58, 138], allBd: [147,197,253],
+    mostBg:     [254,243,199], mostTx:[120,53,15],   mostBd:[252,211,77],
+    someBg:     [254,226,226], someTx:[127,29,29],   someBd:[252,165,165],
+    rowAlt:     [248,250,252],
+  };
+
+  const LM = { // level meta
+    over: { label:'Överträffar förväntningar', short:'Överträffar',     bg:C.overBg, tx:C.overTx, bd:C.overBd },
+    all:  { label:'Infriar alla förväntningar', short:'Alla förv.',     bg:C.allBg,  tx:C.allTx,  bd:C.allBd  },
+    most: { label:'Infriar till stor del',       short:'Till stor del', bg:C.mostBg, tx:C.mostTx, bd:C.mostBd },
+    some: { label:'Infriar till viss del',        short:'Till viss del',bg:C.someBg, tx:C.someTx, bd:C.someBd },
+  };
+
+  let pageNum = 0;
+
+  // ── Low-level helpers ────────────────────────────────────────────
+  function rgb(c) { return { r:c[0], g:c[1], b:c[2] }; }
+  function setFill(c) { doc.setFillColor(...c); }
+  function setDraw(c) { doc.setDrawColor(...c); }
+  function setTxt(c)  { doc.setTextColor(...c); }
+  function setFont(style='normal', size=9) {
+    doc.setFont('helvetica', style);
+    doc.setFontSize(size);
+  }
+  function wrap(text, maxW) {
+    return doc.splitTextToSize(String(text || ''), maxW);
+  }
+
+  // ── Page management ──────────────────────────────────────────────
+  function addPage() {
+    if (pageNum > 0) doc.addPage();
+    pageNum++;
+    // Header bar
+    setFill(C.primary);
+    doc.rect(0, 0, PW, 10, 'F');
+    setTxt(C.white); setFont('bold', 7);
+    doc.text('AHLSELL SVERIGE AB · LÖNEGRUNDANDE SAMTAL', ML, 6.8);
+    const rLabel = S.role ? ROLES[S.role].label : '';
+    const emp = S.meta.employee || '';
+    const yr  = S.meta.year || '';
+    setFont('normal', 7);
+    doc.text([emp, rLabel, yr].filter(Boolean).join(' · '), PW - MR, 6.8, { align:'right' });
+    // Footer
+    setFill(C.border);
+    doc.rect(0, PH - FOOTER_H, PW, FOOTER_H, 'F');
+    setTxt(C.muted); setFont('normal', 7);
+    doc.text('Konfidentiellt — Ahlsell Sverige AB', ML, PH - 4);
+    doc.text(`Sida ${pageNum}`, PW - MR, PH - 4, { align:'right' });
+    return 14; // return starting y
+  }
+
+  function checkY(y, needed = 12) {
+    if (y + needed > BODY_MAX) {
+      y = addPage();
+    }
+    return y;
+  }
+
+  // ── Component helpers ────────────────────────────────────────────
+  function sectionBar(y, text) {
+    setFill(C.primary);
+    doc.rect(ML, y, CW, 8, 'F');
+    setTxt(C.white); setFont('bold', 10);
+    doc.text(text, ML + 4, y + 5.5);
+    return y + 10;
+  }
+
+  function h2(y, text) {
+    setTxt(C.primary); setFont('bold', 11);
+    doc.text(text, ML, y);
+    setDraw(C.primary); setFill(C.primary);
+    doc.line(ML, y + 1.5, ML + CW, y + 1.5);
+    return y + 6;
+  }
+
+  function labelLine(y, label, value, labelW = 40) {
+    setTxt(C.muted); setFont('bold', 8);
+    doc.text(label, ML, y);
+    setTxt(C.text); setFont('normal', 9);
+    doc.text(String(value || '—'), ML + labelW, y);
+    return y + 5.5;
+  }
+
+  function ratingChip(doc, x, y, lvl) {
+    if (!lvl || !LM[lvl]) return;
+    const m = LM[lvl];
+    const label = m.short;
+    setFont('bold', 7.5);
+    const tw = doc.getTextWidth(label);
+    const pw = tw + 6, ph = 5.5;
+    setFill(m.bg); setDraw(m.bd);
+    doc.roundedRect(x, y - ph + 1.5, pw, ph, 1.5, 1.5, 'FD');
+    setTxt(m.tx);
+    doc.text(label, x + 3, y);
+  }
+
+  function tableHeader(y, cols) {
+    // cols: [{text, x, w}]
+    const rowH = 7;
+    setFill(C.primary);
+    doc.rect(ML, y, CW, rowH, 'F');
+    setTxt(C.white); setFont('bold', 7.5);
+    cols.forEach(c => doc.text(c.text, c.x + 2, y + 4.8));
+    return y + rowH;
+  }
+
+  function tableRow(y, cells, alt = false, rowH = null) {
+    // cells: [{text, x, w, bold?, color?, wrap?}]
+    // Compute max lines
+    let maxLines = 1;
+    cells.forEach(c => {
+      if (c.wrap) {
+        const lines = wrap(c.text, c.w - 4);
+        maxLines = Math.max(maxLines, lines.length);
+      }
+    });
+    const RH = rowH || Math.max(7, maxLines * 4.5 + 3);
+
+    if (alt) { setFill(C.rowAlt); doc.rect(ML, y, CW, RH, 'F'); }
+    setDraw(C.border);
+    doc.line(ML, y + RH, ML + CW, y + RH);
+
+    cells.forEach(c => {
+      setTxt(c.color || C.text);
+      setFont(c.bold ? 'bold' : 'normal', c.size || 8.5);
+      if (c.wrap) {
+        const lines = wrap(c.text, c.w - 4);
+        lines.forEach((ln, i) => doc.text(ln, c.x + 2, y + 5 + i * 4.5));
+      } else {
+        doc.text(String(c.text || ''), c.x + 2, y + 5);
+      }
+    });
+    return y + RH;
+  }
+
+  function infoBox(y, text, bgColor = C.primaryXL, txColor = C.text) {
+    const lines = wrap(text, CW - 10);
+    const bh = lines.length * 4.5 + 6;
+    setFill(bgColor); doc.roundedRect(ML, y, CW, bh, 2, 2, 'F');
+    setTxt(txColor); setFont('normal', 8.5);
+    lines.forEach((ln, i) => doc.text(ln, ML + 5, y + 5 + i * 4.5));
+    return y + bh + 3;
+  }
+
+  function bulletList(y, items, color = C.text) {
+    items.forEach(item => {
+      y = checkY(y, 6);
+      const lines = wrap(item, CW - 10);
+      setTxt(color); setFont('normal', 8.5);
+      doc.text('•', ML + 2, y);
+      lines.forEach((ln, i) => doc.text(ln, ML + 7, y + i * 4.5));
+      y += Math.max(5, lines.length * 4.5);
+    });
+    return y;
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  //  PAGE 1 — COVER
+  // ════════════════════════════════════════════════════════════════
+  let y = addPage();
+
+  // Big dark cover banner
+  setFill(C.primary);
+  doc.rect(0, 10, PW, 55, 'F');
+
+  // Decorative accent strip
+  setFill(C.accent);
+  doc.rect(0, 61, PW, 3, 'F');
+
+  // Title
+  setTxt(C.white); setFont('bold', 26);
+  doc.text('Lönegrundande samtal', ML, 35);
+  setFont('normal', 11);
+  doc.text('Dokumentation och bedömningsunderlag', ML, 43);
+
+  // Role badge
+  if (S.role) {
+    const rLabel = ROLES[S.role].label;
+    setFont('bold', 9); setFill(C.accent);
+    const rW = doc.getTextWidth(rLabel) + 10;
+    doc.roundedRect(ML, 48, rW, 8, 2, 2, 'F');
+    setTxt(C.white); doc.text(rLabel, ML + 5, 53.5);
+  }
+
+  y = 75;
+
+  // Metadata grid
+  const m = S.meta;
+  setFill(C.primaryXL); doc.roundedRect(ML, y, CW, 44, 3, 3, 'F');
+  setDraw(C.border); doc.roundedRect(ML, y, CW, 44, 3, 3, 'D');
+  y += 7;
+
+  const col1 = ML + 4, col2 = ML + CW/2 + 2;
+  const metaFields = [
+    ['Medarbetare', m.employee || ''], ['Befattning', m.title || ''],
+    ['Chef', m.manager || ''],          ['Bedömt år', m.year || ''],
+    ['Datum för samtal', m.date || ''], ['Roll', S.role ? ROLES[S.role].label : ''],
+  ];
+
+  metaFields.forEach(([label, val], i) => {
+    const x = i % 2 === 0 ? col1 : col2;
+    const rowY = y + Math.floor(i/2) * 13;
+    setTxt(C.muted); setFont('bold', 7);
+    doc.text(label.toUpperCase(), x, rowY);
+    setTxt(C.text); setFont('bold', 10);
+    doc.text(val || '—', x, rowY + 5.5);
+  });
+
+  y = 124;
+
+  // Confidentiality notice
+  setFill([254,226,226]); setDraw(C.someBd);
+  doc.roundedRect(ML, y, CW, 14, 2, 2, 'FD');
+  setTxt(C.someTx); setFont('bold', 8);
+  doc.text('🔒  KONFIDENTIELLT DOKUMENT', ML + 5, y + 5.5);
+  setFont('normal', 7.5);
+  doc.text('Detta dokument innehåller personuppgifter och hanteras i enlighet med Ahlsells riktlinjer och GDPR.', ML + 5, y + 10);
+  y += 20;
+
+  // TOC box
+  y = 145;
+  setFill(C.primaryXL); doc.roundedRect(ML, y, CW, 75, 3, 3, 'F');
+  setTxt(C.primary); setFont('bold', 9); doc.text('INNEHÅLL', ML + 5, y + 8);
+  setDraw(C.border); doc.line(ML + 5, y + 10, ML + CW - 5, y + 10);
+  const toc = [
+    ['1', 'Roll och grundinformation', '1'],
+    ['2', 'Processguide', '2'],
+    ['3', 'Mål och måluppfyllnad', '2'],
+    ['4', 'Kompetenser och bedömning', '3+'],
+    ['5', 'Samlad bedömning', 'slut'],
+    ['6', 'Handlingsplan och underskrifter', 'slut'],
+  ];
+  toc.forEach(([n, label, pg], i) => {
+    const ty = y + 16 + i * 9;
+    setTxt(C.accent); setFont('bold', 8.5); doc.text(n + '.', ML + 5, ty);
+    setTxt(C.text);   setFont('normal', 8.5); doc.text(label, ML + 12, ty);
+    setTxt(C.muted);  setFont('normal', 7.5); doc.text('s. ' + pg, ML + CW - 10, ty, { align:'right' });
+  });
+
+  // Generated timestamp at bottom of cover
+  setTxt(C.muted); setFont('normal', 7);
+  doc.text('Genererad: ' + new Date().toLocaleString('sv-SE'), PW - MR, PH - 4, { align:'right' });
+
+  // ════════════════════════════════════════════════════════════════
+  //  PAGE 2 — PROCESS + MÅL
+  // ════════════════════════════════════════════════════════════════
+  y = addPage();
+  y = sectionBar(y, 'Del 1 — Processguide');
+  y += 4;
+
+  setTxt(C.text); setFont('normal', 8.5);
+  const procIntro = 'Det lönegrundande samtalet bygger vidare på Medarbetardialogen och förankrar sambandet mellan prestation (Vad och Hur) och lönerevision. Nedan följer de fem stegen i genomförandet.';
+  const piLines = wrap(procIntro, CW);
+  piLines.forEach(ln => { doc.text(ln, ML, y); y += 4.5; });
+  y += 4;
+
+  const procRows = [
+    ['1. Förberedelse',            'Båda parter läser igenom Medarbetardialogen och reflekterar. Chefen samlar konkreta observationer per bedömningsområde.'],
+    ['2. Öppning',                 'Förklara syfte, struktur och tidsram. Skapa tryggt klimat och bekräfta konfidentialitet.'],
+    ['3. Prestation & bedömning', 'Gå igenom varje bedömningsområde med stöd av kompetensguiden. Lyssna aktivt och ställ öppna frågor.'],
+    ['4. Helhetsbedömning',       'Koppla samlad bedömning till lönematrisen. Kommunicera transparent — inga bindande löften.'],
+    ['5. Avslut',                  'Formulera handlingsplan vid behov. Bekräfta tidplan för lönebesked och avsluta framåtblickande.'],
+  ];
+
+  const cW1 = 48, cX2 = ML + cW1, cW2 = CW - cW1;
+  y = tableHeader(y, [{ text:'Steg', x:ML, w:cW1 }, { text:'Vad som görs', x:cX2, w:cW2 }]);
+  procRows.forEach(([step, desc], i) => {
+    const lines = wrap(desc, cW2 - 4);
+    const rh = Math.max(8, lines.length * 4.5 + 4);
+    y = checkY(y, rh);
+    y = tableRow(y, [
+      { text:step, x:ML,  w:cW1, bold:true, color:C.primary, size:8.5 },
+      { text:desc, x:cX2, w:cW2, wrap:true },
+    ], i%2===1, rh);
+  });
+
+  y += 10;
+  y = checkY(y, 60);
+  y = sectionBar(y, 'Del 2 — Mål och måluppfyllnad');
+  y += 4;
+
+  const goals = S.goals.filter(g => g.goal);
+  if (goals.length === 0) {
+    y = infoBox(y, 'Inga mål dokumenterade.', C.rowAlt, C.muted);
+  } else {
+    const gW = [CW * 0.36, CW * 0.46, CW * 0.18];
+    const gX = [ML, ML + gW[0], ML + gW[0] + gW[1]];
+    y = tableHeader(y, [
+      { text:'Mål', x:gX[0], w:gW[0] },
+      { text:'Utfall och kommentar', x:gX[1], w:gW[1] },
+      { text:'Bedömning', x:gX[2], w:gW[2] },
+    ]);
+    goals.forEach((g, i) => {
+      const l1 = wrap(g.goal,    gW[0] - 4);
+      const l2 = wrap(g.outcome, gW[1] - 4);
+      const rh = Math.max(8, Math.max(l1.length, l2.length) * 4.5 + 4);
+      y = checkY(y, rh);
+      const rowY = y;
+      if (i%2===1) { setFill(C.rowAlt); doc.rect(ML, rowY, CW, rh, 'F'); }
+      setDraw(C.border); doc.line(ML, rowY+rh, ML+CW, rowY+rh);
+      // col 1
+      setTxt(C.text); setFont('normal', 8.5);
+      l1.forEach((ln, li) => doc.text(ln, gX[0]+2, rowY+5+li*4.5));
+      // col 2
+      l2.forEach((ln, li) => doc.text(ln, gX[1]+2, rowY+5+li*4.5));
+      // col 3 — chip
+      if (g.level) ratingChip(doc, gX[2]+2, rowY+5.5, g.level);
+      else { setTxt(C.muted); setFont('italic', 7.5); doc.text('—', gX[2]+2, rowY+5); }
+      y = rowY + rh;
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  //  PAGES 3+ — COMPETENCIES
+  // ════════════════════════════════════════════════════════════════
+  const comps = visibleComps();
+
+  comps.forEach((c, ci) => {
+    y = addPage();
+    const rating = S.ratings[c.id] || {};
+    const lvl = rating.level;
+    const lm = lvl ? LM[lvl] : null;
+
+    // Comp header bar with rating chip
+    setFill(C.primary);
+    doc.rect(ML, y, CW, 10, 'F');
+    setTxt(C.white); setFont('bold', 10);
+    doc.text(`${ci+1}. ${c.title}`, ML+4, y+6.5);
+    if (lm) {
+      const cw = doc.getTextWidth(lm.short) + 8;
+      setFill(lm.bg); doc.roundedRect(ML+CW-cw-2, y+1.5, cw, 7, 1.5, 1.5, 'F');
+      setTxt(lm.tx); setFont('bold', 7.5); doc.text(lm.short, ML+CW-cw+1, y+6.2);
+    }
+    y += 12;
+
+    // Description
+    setTxt(C.muted); setFont('italic', 8.5);
+    const dlines = wrap(c.desc, CW);
+    dlines.forEach(ln => { doc.text(ln, ML, y); y += 4.5; });
+    y += 4;
+
+    // Role focus
+    if (S.role && c.roleFocus[S.role]) {
+      setFill(C.primaryXL); doc.roundedRect(ML, y, CW, 1, 2, 2, 'F'); // temp
+      const rfLines = wrap(c.roleFocus[S.role], CW - 14);
+      const rfH = rfLines.length * 4.5 + 9;
+      setFill(C.primaryXL); doc.roundedRect(ML, y, CW, rfH, 2, 2, 'F');
+      setDraw(C.primary2); doc.rect(ML, y, 3, rfH, 'F');
+      setTxt(C.primary); setFont('bold', 7.5);
+      doc.text(ROLES[S.role].label.toUpperCase() + ' — ROLLENS FOKUS', ML+6, y+5);
+      setTxt(C.text); setFont('normal', 8.5);
+      rfLines.forEach((ln, i) => doc.text(ln, ML+6, y+9+i*4.5));
+      y += rfH + 5;
+    }
+
+    // Bedömningsnivå section
+    if (lm) {
+      setFill(lm.bg); setDraw(lm.bd);
+      const lvlLabel = 'BEDÖMNINGSNIVÅ: ' + lm.label.toUpperCase();
+      doc.roundedRect(ML, y, CW, 8, 2, 2, 'FD');
+      setTxt(lm.tx); setFont('bold', 8.5);
+      doc.text(lvlLabel, ML+5, y+5.2);
+      y += 11;
+
+      // Behavior indicators for selected level
+      const indTitle = 'Beteendeindikatorer';
+      setTxt(C.text); setFont('bold', 8.5); doc.text(indTitle, ML, y); y += 5;
+      const indicators = c.indicators[lvl] || [];
+      y = bulletList(y, indicators, lm.tx);
+      y += 4;
+    } else {
+      setFill(C.rowAlt); doc.roundedRect(ML, y, CW, 8, 2, 2, 'F');
+      setTxt(C.muted); setFont('italic', 8.5);
+      doc.text('Ingen bedömningsnivå vald för detta område.', ML+5, y+5.2);
+      y += 12;
+    }
+
+    // Comment / Motivering
+    y = checkY(y, 20);
+    setTxt(C.text); setFont('bold', 8.5); doc.text('Motivering och konkreta exempel', ML, y); y += 5;
+    const comment = rating.comment || '';
+    if (comment.trim()) {
+      const cLines = wrap(comment, CW - 4);
+      const ch = cLines.length * 4.5 + 8;
+      setFill(C.rowAlt); setDraw(C.border);
+      doc.roundedRect(ML, y, CW, ch, 2, 2, 'FD');
+      setTxt(C.text); setFont('normal', 8.5);
+      cLines.forEach((ln, i) => doc.text(ln, ML+4, y+5+i*4.5));
+      y += ch + 6;
+    } else {
+      setFill([248,248,248]); setDraw(C.border);
+      doc.roundedRect(ML, y, CW, 10, 2, 2, 'FD');
+      setTxt(C.muted); setFont('italic', 8.5);
+      doc.text('Ingen motivering angiven.', ML+4, y+6.2);
+      y += 14;
+    }
+
+    // Coaching questions (always included in PDF as reference)
+    y = checkY(y, 30);
+    setFill(C.allBg); setDraw(C.allBd);
+    const qLines = c.questions.map((q, qi) => `${qi+1}. ${q}`);
+    const qHeight = qLines.reduce((acc, q) => acc + wrap(q, CW-10).length * 4.5, 0) + 14;
+    doc.roundedRect(ML, y, CW, qHeight, 2, 2, 'FD');
+    setTxt(C.allTx); setFont('bold', 7.5);
+    doc.text('STÖDFRÅGOR TILL SAMTALET', ML+5, y+5.5);
+    setFont('normal', 8);
+    let qy = y + 10;
+    c.questions.forEach((q, qi) => {
+      const ql = wrap(`${qi+1}. ${q}`, CW-10);
+      ql.forEach((ln, li) => doc.text(ln, ML+5, qy + li*4.5));
+      qy += ql.length * 4.5 + 1;
+    });
+    y = qy + 4;
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  //  FINAL PAGE — SUMMARY + ACTION PLAN + SIGNATURES
+  // ════════════════════════════════════════════════════════════════
+  y = addPage();
+  y = sectionBar(y, 'Del 3 — Samlad bedömning');
+  y += 5;
+
+  // Summary table
+  const sW = [CW*0.48, CW*0.27, CW*0.25];
+  const sX = [ML, ML+sW[0], ML+sW[0]+sW[1]];
+  y = tableHeader(y, [
+    { text:'Bedömningsområde',         x:sX[0], w:sW[0] },
+    { text:'Bedömning',                x:sX[1], w:sW[1] },
+    { text:'Kommentar (utdrag)',       x:sX[2], w:sW[2] },
+  ]);
+
+  comps.forEach((c, i) => {
+    const r = S.ratings[c.id] || {};
+    const commentExcerpt = r.comment ? r.comment.substring(0,55) + (r.comment.length>55?'…':'') : '—';
+    const rowY = y;
+    const rh = 9;
+    if (i%2===1) { setFill(C.rowAlt); doc.rect(ML, rowY, CW, rh, 'F'); }
+    setDraw(C.border); doc.line(ML, rowY+rh, ML+CW, rowY+rh);
+    setTxt(C.text); setFont('normal', 8.5);
+    doc.text(`${i+1}. ${c.title}`, sX[0]+2, rowY+5.5);
+    if (r.level) ratingChip(doc, sX[1]+2, rowY+6, r.level);
+    else { setTxt(C.muted); setFont('italic',7.5); doc.text('Ej bedömd', sX[1]+2, rowY+5.5); }
+    setTxt(C.muted); setFont('normal',7.5); doc.text(commentExcerpt, sX[2]+2, rowY+5.5);
+    y = rowY + rh;
+  });
+
+  y += 7;
+
+  // Overall assessment
+  const ol = S.overallLevel;
+  if (ol && LM[ol]) {
+    const olm = LM[ol];
+    setFill(olm.bg); setDraw(olm.bd);
+    doc.roundedRect(ML, y, CW, 10, 2, 2, 'FD');
+    setTxt(olm.tx); setFont('bold', 9);
+    doc.text('SAMLAD BEDÖMNING: ' + olm.label.toUpperCase(), ML+5, y+6.5);
+    y += 13;
+  }
+
+  if (S.overallComment.trim()) {
+    const ocLines = wrap(S.overallComment, CW-4);
+    const och = ocLines.length * 4.5 + 8;
+    setFill(C.rowAlt); setDraw(C.border);
+    doc.roundedRect(ML, y, CW, och, 2, 2, 'FD');
+    setTxt(C.text); setFont('normal', 8.5);
+    ocLines.forEach((ln,i) => doc.text(ln, ML+4, y+5+i*4.5));
+    y += och + 8;
+  }
+
+  // Action plan
+  const actions = S.actions.filter(a => a.area || a.action);
+  const lowAreas = comps.filter(c => S.ratings[c.id]?.level === 'some');
+
+  y = checkY(y, 40);
+  y = sectionBar(y, 'Del 4 — Handlingsplan');
+  y += 5;
+
+  if (lowAreas.length > 0) {
+    setFill(C.someBg); setDraw(C.someBd);
+    const warnH = wrap('Krav på handlingsplan: '+lowAreas.map(c=>c.title).join(', '), CW-10).length * 4.5 + 8;
+    doc.roundedRect(ML, y, CW, warnH, 2, 2, 'FD');
+    setTxt(C.someTx); setFont('bold', 8);
+    const wLines = wrap('Krav på handlingsplan: '+lowAreas.map(c=>c.title).join(', '), CW-10);
+    wLines.forEach((ln,i) => doc.text(ln, ML+5, y+5+i*4.5));
+    y += warnH + 5;
+  }
+
+  if (actions.length > 0) {
+    const aW = [CW*0.25, CW*0.38, CW*0.17, CW*0.20];
+    const aX = [ML, ML+aW[0], ML+aW[0]+aW[1], ML+aW[0]+aW[1]+aW[2]];
+    y = tableHeader(y, [
+      { text:'Bedömningsområde', x:aX[0], w:aW[0] },
+      { text:'Åtgärd / Aktivitet', x:aX[1], w:aW[1] },
+      { text:'Ansvarig',           x:aX[2], w:aW[2] },
+      { text:'Uppföljningsdatum', x:aX[3], w:aW[3] },
+    ]);
+    actions.forEach((a, i) => {
+      const l0 = wrap(a.area||'',   aW[0]-4);
+      const l1 = wrap(a.action||'', aW[1]-4);
+      const rh = Math.max(8, Math.max(l0.length,l1.length)*4.5+4);
+      y = checkY(y, rh);
+      if (i%2===1) { setFill(C.rowAlt); doc.rect(ML, y, CW, rh, 'F'); }
+      setDraw(C.border); doc.line(ML, y+rh, ML+CW, y+rh);
+      setFont('normal',8); setTxt(C.text);
+      l0.forEach((ln,li) => doc.text(ln, aX[0]+2, y+5+li*4.5));
+      l1.forEach((ln,li) => doc.text(ln, aX[1]+2, y+5+li*4.5));
+      doc.text(a.responsible||'', aX[2]+2, y+5);
+      doc.text(a.date||'', aX[3]+2, y+5);
+      y += rh;
+    });
+  } else {
+    y = infoBox(y, 'Ingen handlingsplan upprättad.', C.rowAlt, C.muted);
+  }
+
+  // Notes / Statistics
+  if (S.notes.trim()) {
+    y = checkY(y, 30);
+    y += 4;
+    setTxt(C.primary); setFont('bold', 9); doc.text('Statistik och övrigt underlag', ML, y); y += 5;
+    const nLines = wrap(S.notes, CW-4);
+    const nh = nLines.length * 4.5 + 8;
+    y = checkY(y, nh);
+    setFill(C.rowAlt); setDraw(C.border);
+    doc.roundedRect(ML, y, CW, nh, 2, 2, 'FD');
+    setTxt(C.text); setFont('normal',8.5);
+    nLines.forEach((ln,i) => doc.text(ln, ML+4, y+5+i*4.5));
+    y += nh + 8;
+  }
+
+  // Signatures
+  y = checkY(y, 40);
+  y += 6;
+  setTxt(C.primary); setFont('bold', 9); doc.text('Underskrifter', ML, y); y += 2;
+  setDraw(C.border); doc.line(ML, y, ML+CW, y); y += 6;
+
+  setTxt(C.muted); setFont('normal', 7.5);
+  doc.text('Medarbetarens underskrift bekräftar att samtalet ägt rum och att bedömningen kommunicerats — inte att hen instämmer i alla delar.', ML, y);
+  y += 8;
+
+  const sigW = (CW - 10) / 2;
+  // Medarbetare
+  setTxt(C.text); setFont('bold', 8.5);
+  doc.text('Medarbetare: ' + (S.meta.employee || '______________________'), ML, y);
+  setDraw(C.primary); setFill(C.primary);
+  doc.line(ML, y+16, ML+sigW, y+16);
+  setTxt(C.muted); setFont('normal', 7); doc.text('Underskrift och datum', ML, y+20);
+
+  // Chef
+  const sx2 = ML + sigW + 10;
+  setTxt(C.text); setFont('bold', 8.5);
+  doc.text('Chef: ' + (S.meta.manager || '______________________'), sx2, y);
+  doc.line(sx2, y+16, sx2+sigW, y+16);
+  setTxt(C.muted); setFont('normal', 7); doc.text('Underskrift och datum', sx2, y+20);
+
+  // ── Save ──────────────────────────────────────────────────────────
+  const emp = (S.meta.employee || 'medarbetare').replace(/\s+/g,'_');
+  const yr  = S.meta.year || new Date().getFullYear();
+  doc.save(`Lonegrundande_samtal_${emp}_${yr}.pdf`);
+}
 
 // ══════════════════════════════════════════════════════════════════
 //  INIT
